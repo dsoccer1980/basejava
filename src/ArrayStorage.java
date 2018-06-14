@@ -7,19 +7,42 @@ public class ArrayStorage {
     private Resume[] storage = new Resume[10000];
     private int elementsCount = 0;
 
-    void clear() {
+    public void clear() {
         Arrays.fill(storage, 0, elementsCount, null);
         elementsCount = 0;
     }
 
-    void save(Resume r) {
-        storage[elementsCount++] = r;
+    public void save(Resume r) {
+        if ((r != null) && getIndex(r.uuid) == -1) {
+            storage[elementsCount++] = r;
+        }
     }
 
-    Resume get(String uuid) {
+    public Resume get(String uuid) {
         int index = getIndex(uuid);
-        if (index != -1) return storage[index];
+        if (index != -1) {
+            return storage[index];
+        }
         return null;
+    }
+
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            System.arraycopy(storage, index + 1, storage, index, elementsCount - (index + 1));
+            elementsCount--;
+        }
+    }
+
+    /**
+     * @return array, contains only Resumes in storage (without null)
+     */
+    public Resume[] getAll() {
+        return Arrays.copyOf(storage, elementsCount);
+    }
+
+    public int size() {
+        return elementsCount;
     }
 
     private int getIndex(String uuid) {
@@ -29,24 +52,5 @@ public class ArrayStorage {
             }
         }
         return -1;
-    }
-
-    void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            System.arraycopy(storage, index + 1, storage, index + 1 - 1, elementsCount - (index + 1));
-            elementsCount--;
-        }
-    }
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, elementsCount);
-    }
-
-    int size() {
-        return elementsCount;
     }
 }
