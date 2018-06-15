@@ -10,9 +10,9 @@ public class ArrayStorage {
     public void update(Resume r) {
         int index = getIndex(r.getUuid());
         if (index != -1) {
-            storage[index].setUuid(r.getUuid());
+            storage[index] = r;
         } else {
-            System.out.println("Warning: Resume '" + r.getUuid() + "' does not exist in storage");
+            System.out.println("Warning: Resume '" + r + "' does not exist in storage");
         }
     }
 
@@ -22,14 +22,14 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (size == storage.length) {
-            System.out.println("Warning: Resume was not inserted. Storage is full");
-        } else if ((r != null) && getIndex(r.getUuid()) == -1) {
-            storage[size++] = r;
-        } else if (r == null) {
+        if (r == null) {
             System.out.println("Warning: Resume is null");
+        } else if (size == storage.length) {
+            System.out.println("Warning: Resume was not inserted. Storage is full");
+        } else if (getIndex(r.getUuid()) != -1) {
+            System.out.println("Warning: Resume '" + r + "' already exists in storage");
         } else {
-            System.out.println("Warning: Resume '" + r.getUuid() + "' already exists in storage");
+            storage[size++] = r;
         }
     }
 
