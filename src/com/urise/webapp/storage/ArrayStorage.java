@@ -12,11 +12,15 @@ public class ArrayStorage {
     private int size = 0;
 
     public void update(Resume r) {
+        if (r == null) {
+            System.out.println("Warning: Resume is null");
+            return;
+        }
         int index = getIndex(r.getUuid());
         if (index != -1) {
             storage[index] = r;
         } else {
-            System.out.println("Warning: com.urise.webapp.model.Resume '" + r + "' does not exist in storage");
+            System.out.println("Warning: Resume '" + r + "' does not exist in storage");
         }
     }
 
@@ -27,11 +31,11 @@ public class ArrayStorage {
 
     public void save(Resume r) {
         if (r == null) {
-            System.out.println("Warning: com.urise.webapp.model.Resume is null");
+            System.out.println("Warning: Resume is null");
         } else if (size == storage.length) {
-            System.out.println("Warning: com.urise.webapp.model.Resume was not inserted. Storage is full");
+            System.out.println("Warning: Resume was not inserted. Storage is full");
         } else if (getIndex(r.getUuid()) != -1) {
-            System.out.println("Warning: com.urise.webapp.model.Resume '" + r + "' already exists in storage");
+            System.out.println("Warning: Resume '" + r + "' already exists in storage");
         } else {
             storage[size++] = r;
         }
@@ -42,7 +46,7 @@ public class ArrayStorage {
         if (index != -1) {
             return storage[index];
         } else {
-            System.out.println("Warning: com.urise.webapp.model.Resume '" + uuid + "' does not exist in storage");
+            System.out.println("Warning: Resume '" + uuid + "' does not exist in storage");
             return null;
         }
     }
@@ -54,7 +58,7 @@ public class ArrayStorage {
             storage[size - 1] = null;
             size--;
         } else {
-            System.out.println("Warning: com.urise.webapp.model.Resume '" + uuid + "' does not exist in storage");
+            System.out.println("Warning: Resume '" + uuid + "' does not exist in storage");
         }
     }
 
