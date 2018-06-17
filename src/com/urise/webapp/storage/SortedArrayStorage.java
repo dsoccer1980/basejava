@@ -10,21 +10,21 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void save(Resume r) {
-        if (r == null) {
+    public void save(Resume resume) {
+        if (resume == null) {
             System.out.println("Warning: Resume is null");
         } else if (size == STORAGE_LIMIT) {
             System.out.println("Warning: Resume was not inserted. Storage is full");
         } else {
-            int index = Arrays.binarySearch(storage, 0, size, r);
+            int index = Arrays.binarySearch(storage, 0, size, resume);
             if (index >= 0) {
-                System.out.println("Warning: Resume '" + r + "' already exists in storage");
+                System.out.println("Warning: Resume '" + resume + "' already exists in storage");
             } else {
                 int insertPosition = Math.abs(index) - 1;
                 if (insertPosition < size) {
                     System.arraycopy(storage, insertPosition, storage, insertPosition + 1, size - insertPosition + 1);
                 }
-                storage[insertPosition] = r;
+                storage[insertPosition] = resume;
                 size++;
             }
         }

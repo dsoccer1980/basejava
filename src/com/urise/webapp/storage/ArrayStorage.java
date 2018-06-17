@@ -9,15 +9,15 @@ import com.urise.webapp.model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void save(Resume r) {
-        if (r == null) {
+    public void save(Resume resume) {
+        if (resume == null) {
             System.out.println("Warning: Resume is null");
         } else if (size == STORAGE_LIMIT) {
             System.out.println("Warning: Resume was not inserted. Storage is full");
-        } else if (getIndex(r.getUuid()) != -1) {
-            System.out.println("Warning: Resume '" + r + "' already exists in storage");
+        } else if (getIndex(resume.getUuid()) != -1) {
+            System.out.println("Warning: Resume '" + resume + "' already exists in storage");
         } else {
-            storage[size++] = r;
+            storage[size++] = resume;
         }
     }
 

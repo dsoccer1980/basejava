@@ -27,16 +27,16 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void update(Resume r) {
-        if (r == null) {
+    public void update(Resume resume) {
+        if (resume == null) {
             System.out.println("Warning: Resume is null");
             return;
         }
-        int index = getIndex(r.getUuid());
+        int index = getIndex(resume.getUuid());
         if (index != -1) {
-            storage[index] = r;
+            storage[index] = resume;
         } else {
-            System.out.println("Warning: Resume '" + r + "' does not exist in storage");
+            System.out.println("Warning: Resume '" + resume + "' does not exist in storage");
         }
     }
 
