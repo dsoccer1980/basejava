@@ -10,42 +10,26 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void save(Resume resume) {
-        if (resume == null) {
-            System.out.println("Warning: Resume is null");
-        } else if (size == STORAGE_LIMIT) {
-            System.out.println("Warning: Resume was not inserted. Storage is full");
-        } else {
-            int index = Arrays.binarySearch(storage, 0, size, resume);
-            if (index >= 0) {
-                System.out.println("Warning: Resume '" + resume + "' already exists in storage");
-            } else {
-                int insertPosition = Math.abs(index) - 1;
-                if (insertPosition < size) {
-                    System.arraycopy(storage, insertPosition, storage, insertPosition + 1, size - insertPosition + 1);
-                }
-                storage[insertPosition] = resume;
-                size++;
-            }
-        }
-    }
-
-    @Override
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index != -1) {
-            System.arraycopy(storage, index + 1 , storage, index, size - index - 1);
-            storage[size] = null;
-            size--;
-        } else {
-            System.out.println("Warning: Resume '" + uuid + "' does not exist in storage");
-        }
-    }
-
-    @Override
     protected int getIndex(String uuid) {
         Resume searchKey = new Resume();
         searchKey.setUuid(uuid);
         return Arrays.binarySearch(storage, 0, size, searchKey);
     }
+
+    @Override
+    protected void insertResume(Resume resume, int index) {
+        int insertPosition = -index - 1;
+        if (insertPosition < size) {
+            System.arraycopy(storage, insertPosition, storage, insertPosition + 1, size - insertPosition + 1);
+        }
+        storage[insertPosition] = resume;
+    }
+
+    @Override
+    protected void deleteResume(int index) {
+        System.arraycopy(storage, index + 1 , storage, index, size - index - 1);
+        storage[size] = null;
+    }
+
+
 }
