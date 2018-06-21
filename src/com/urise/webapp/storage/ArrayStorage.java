@@ -20,12 +20,12 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void insertResume(Resume resume, int index) {
+        //the variable index is not used here
         storage[size] = resume;
     }
 
     @Override
     protected void deleteResume(int index) {
         storage[index] = storage[size - 1];
-        storage[size - 1] = null;
     }
 }
