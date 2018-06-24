@@ -1,5 +1,8 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
+import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -16,11 +19,11 @@ public abstract class AbstractArrayStorage implements Storage {
         Objects.requireNonNull(resume, "Warning: Resume is null");
 
         if (size == STORAGE_LIMIT) {
-            System.out.println("Warning: Resume was not inserted. Storage is full");
+            throw new StorageException("Storage overflowed", resume.getUuid());
         } else {
             int index = getIndex(resume.getUuid());
             if (index >= 0) {
-                System.out.println("Warning: Resume '" + resume + "' already exists in storage");
+                throw new ExistStorageException(resume.getUuid());
             } else {
                 insertResume(resume, index);
                 size++;
@@ -34,8 +37,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             return storage[index];
         } else {
-            System.out.println("Warning: Resume '" + uuid + "' does not exist in storage");
-            return null;
+            throw new NotExistStorageException(uuid);
         }
     }
 
@@ -43,7 +45,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Warning: Resume '" + uuid + "' does not exist in storage");
+            throw new NotExistStorageException(uuid);
         } else {
             deleteResume(index);
             storage[size - 1] = null;
@@ -65,7 +67,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             storage[index] = resume;
         } else {
-            System.out.println("Warning: Resume '" + resume + "' does not exist in storage");
+            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
