@@ -5,9 +5,7 @@ import com.urise.webapp.model.Resume;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * Array based storage for Resumes
- */
+
 public abstract class AbstractArrayStorage implements Storage {
     protected final int STORAGE_LIMIT = 10000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
