@@ -16,5 +16,7 @@ public interface Storage {
 
     Resume[] getAll();
 
+    int getStorageLimit();
+
     int size();
 }

@@ -80,6 +80,11 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
+    public int getStorageLimit() {
+        return STORAGE_LIMIT;
+    }
+
+    @Override
     public int size() {
         return size;
     }
