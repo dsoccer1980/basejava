@@ -10,7 +10,7 @@ import java.util.Objects;
 
 
 public abstract class AbstractArrayStorage implements Storage {
-    protected final int STORAGE_LIMIT = 10000;
+    protected static final int STORAGE_LIMIT = 10000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
@@ -77,11 +77,6 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public Resume[] getAll() {
         return Arrays.copyOf(storage, size);
-    }
-
-    @Override
-    public int getStorageLimit() {
-        return STORAGE_LIMIT;
     }
 
     @Override

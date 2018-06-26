@@ -50,7 +50,7 @@ public abstract class AbstractArrayStorageTest {
     @Test(expected = StorageException.class)
     public void saveOverFlow() throws Exception {
         try {
-            int storageLimit = storage.getStorageLimit();
+            int storageLimit = AbstractArrayStorage.STORAGE_LIMIT;
             for (int i = 0; i < storageLimit - COUNT_RESUMES_IN_STORAGE_BEFORE_TEST; i++) {
                 storage.save(new Resume());
             }
@@ -102,7 +102,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll() throws Exception {
-        Resume[] resumes = new Resume[]{resume1, resume2, resume3};
+        Resume[] resumes = {resume1, resume2, resume3};
         assertArrayEquals(resumes, storage.getAll());
     }
 
