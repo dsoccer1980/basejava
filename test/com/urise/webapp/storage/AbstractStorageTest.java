@@ -14,7 +14,7 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String DUMMY = "dummy";
-    protected static final int COUNT_RESUMES_IN_STORAGE_BEFORE_TEST = 3;
+    protected static int countResumesInStorageBeforeTest;
     private Resume resume1 = new Resume(UUID_1);
     private Resume resume2 = new Resume(UUID_2);
     private Resume resume3 = new Resume(UUID_3);
@@ -27,6 +27,7 @@ public abstract class AbstractStorageTest {
         storage.save(resume1);
         storage.save(resume2);
         storage.save(resume3);
+        countResumesInStorageBeforeTest = storage.size();
     }
 
     public AbstractStorageTest(Storage storage) {
@@ -36,7 +37,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void save() throws Exception {
         storage.save(resume4);
-        assertEquals(COUNT_RESUMES_IN_STORAGE_BEFORE_TEST + 1, storage.size());
+        assertEquals(countResumesInStorageBeforeTest + 1, storage.size());
         assertEquals(resume4, storage.get(resume4.getUuid()));
     }
 
@@ -44,9 +45,6 @@ public abstract class AbstractStorageTest {
     public void saveExistResume() throws Exception {
         storage.save(resume3);
     }
-
-    @Test
-    abstract public void saveOverFlow() throws Exception;
 
     @Test
     public void get() throws Exception {
@@ -61,7 +59,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void delete() throws Exception {
         storage.delete(UUID_2);
-        assertEquals(COUNT_RESUMES_IN_STORAGE_BEFORE_TEST - 1, storage.size());
+        assertEquals(countResumesInStorageBeforeTest - 1, storage.size());
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -78,7 +76,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() throws Exception {
         storage.update(resume1);
-        assertEquals(COUNT_RESUMES_IN_STORAGE_BEFORE_TEST, storage.size());
+        assertEquals(countResumesInStorageBeforeTest, storage.size());
         assertEquals(resume1, storage.get(UUID_1));
     }
 
@@ -95,7 +93,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void size() throws Exception {
-        assertEquals(COUNT_RESUMES_IN_STORAGE_BEFORE_TEST, storage.size());
+        assertEquals(countResumesInStorageBeforeTest, storage.size());
     }
 
 }
