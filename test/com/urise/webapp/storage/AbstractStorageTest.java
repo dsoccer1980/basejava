@@ -22,7 +22,7 @@ public abstract class AbstractStorageTest {
     private Resume dummyResume = new Resume(DUMMY);
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         storage.clear();
         storage.save(resume1);
         storage.save(resume2);
@@ -35,64 +35,64 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void save() throws Exception {
+    public void save() {
         storage.save(resume4);
         assertEquals(countResumesInStorageBeforeTest + 1, storage.size());
         assertEquals(resume4, storage.get(resume4.getUuid()));
     }
 
     @Test(expected = ExistStorageException.class)
-    public void saveExistResume() throws Exception {
+    public void saveExistResume() {
         storage.save(resume3);
     }
 
     @Test
-    public void get() throws Exception {
+    public void get() {
         assertEquals(resume2, storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
-    public void getNotExist() throws Exception {
+    public void getNotExist() {
         storage.get(DUMMY);
     }
 
     @Test
-    public void delete() throws Exception {
+    public void delete() {
         storage.delete(UUID_2);
         assertEquals(countResumesInStorageBeforeTest - 1, storage.size());
     }
 
     @Test(expected = NotExistStorageException.class)
-    public void deleteNotExist() throws Exception {
+    public void deleteNotExist() {
         storage.delete(DUMMY);
     }
 
     @Test
-    public void clear() throws Exception {
+    public void clear() {
         storage.clear();
         assertEquals(0, storage.size());
     }
 
     @Test
-    public void update() throws Exception {
+    public void update() {
         storage.update(resume1);
         assertEquals(countResumesInStorageBeforeTest, storage.size());
         assertEquals(resume1, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
-    public void updateNotExist() throws Exception {
+    public void updateNotExist() {
         storage.update(dummyResume);
     }
 
     @Test
-    public void getAll() throws Exception {
+    public void getAll() {
         Resume[] resumes = {resume1, resume2, resume3};
         assertArrayEquals(resumes, storage.getAll());
     }
 
     @Test
-    public void size() throws Exception {
+    public void size() {
         assertEquals(countResumesInStorageBeforeTest, storage.size());
     }
 
