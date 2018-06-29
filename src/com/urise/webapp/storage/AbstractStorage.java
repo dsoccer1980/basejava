@@ -10,26 +10,26 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public void save(Resume resume) {
         checkForNonNull(resume);
-        Object searchKey = getSearchKeyForSaveOrException(resume);
+        Object searchKey = getIfNotExist(resume);
         doSave(searchKey, resume);
     }
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = getSearchKeyOrNotExistStorageException(uuid);
+        Object searchKey = getIfExist(uuid);
         return doGet(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = getSearchKeyOrNotExistStorageException(uuid);
+        Object searchKey = getIfExist(uuid);
         doDelete(searchKey);
     }
 
     @Override
     public void update(Resume resume) {
         checkForNonNull(resume);
-        Object searchKey = getSearchKeyOrNotExistStorageException(resume.getUuid());
+        Object searchKey = getIfExist(resume.getUuid());
         doUpdate(searchKey, resume);
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractStorage implements Storage {
         Objects.requireNonNull(resume, "Warning: Resume is null");
     }
 
-    private Object getSearchKeyOrNotExistStorageException(String uuid) {
+    private Object getIfExist(String uuid) {
         Object searchKey = getSearchKey(uuid);
 
         if (searchKey == null) {
@@ -52,7 +52,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract Resume doGet(Object searchKey);
 
-    protected abstract Object getSearchKeyForSaveOrException(Resume resume);
+    protected abstract Object getIfNotExist(Resume resume);
 
     protected abstract void doUpdate(Object searchKey, Resume resume);
 

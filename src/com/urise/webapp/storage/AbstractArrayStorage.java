@@ -68,7 +68,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getSearchKeyForSaveOrException(Resume resume) {
+    protected Object getIfNotExist(Resume resume) {
         if (isStorageFull()) {
             throw new StorageException("Storage overflowed", resume.getUuid());
         } else {

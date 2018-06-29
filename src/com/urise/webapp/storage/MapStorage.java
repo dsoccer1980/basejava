@@ -39,7 +39,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getSearchKeyForSaveOrException(Resume resume) {
+    protected Object getIfNotExist(Resume resume) {
         return null;
     }
 
