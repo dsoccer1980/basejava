@@ -11,10 +11,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
-    protected boolean isStorageFull() {
-        return size == STORAGE_LIMIT;
-    }
-
     @Override
     protected Resume doGet(Object searchKey) {
         return storage[(Integer) searchKey];
@@ -69,6 +65,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     @Override
     protected boolean isExist(Object searchKey) {
         return (Integer) searchKey >= 0;
+    }
+
+    private boolean isStorageFull() {
+        return size == STORAGE_LIMIT;
     }
 
     protected abstract void insertElement(Resume resume, int index);
