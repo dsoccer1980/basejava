@@ -29,12 +29,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object indexOrKey, Resume resume) {
+    protected void doSave(Object searchKey, Resume resume) {
 
     }
 
     @Override
-    protected Resume doGet(Object indexOrKey) {
+    protected Resume doGet(Object searchKey) {
         return null;
     }
 
@@ -49,12 +49,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doDelete(Object indexOrKey) {
+    protected void doDelete(Object searchKey) {
 
     }
 
     @Override
-    protected void doUpdate(Object indexOrKey, Resume resume) {
+    protected void doUpdate(Object searchKey, Resume resume) {
 
     }
 
