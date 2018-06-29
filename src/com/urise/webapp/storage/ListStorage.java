@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
@@ -25,7 +26,44 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected int getIndex(String uuid) {
+    protected Resume doGet(Object searchKey) {
+        return storage.get((Integer)searchKey);
+    }
+
+    @Override
+    protected Object getSearchKey(String uuid) {
+        int index = getIndex(uuid);
+        if (index == -1) {
+            return null;
+        }
+        return getIndex(uuid);
+    }
+
+    @Override
+    protected void doSave(Object searchKey, Resume resume) {
+        storage.add(resume);
+    }
+
+    @Override
+    protected Object getSearchKeyForSaveOrException(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index >= 0) {
+            throw new ExistStorageException(resume.getUuid());
+        }
+        return index;
+    }
+    
+    @Override
+    protected void doDelete(Object searchKey) {
+        storage.remove(((Integer)searchKey).intValue());
+    }
+
+    @Override
+    protected void doUpdate(Object searchKey, Resume resume) {
+        storage.set((Integer)searchKey, resume);
+    }
+
+    private int getIndex(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -34,28 +72,4 @@ public class ListStorage extends AbstractStorage {
         return -1;
     }
 
-    @Override
-    protected void insertResume(Resume resume, int index) {
-        storage.add(resume);
-    }
-
-    @Override
-    protected Resume getResume(int index) {
-        return storage.get(index);
-    }
-
-    @Override
-    protected void deleteResume(int index) {
-        storage.remove(index);
-    }
-
-    @Override
-    protected void updateResume(Resume resume, int index) {
-        storage.set(index, resume);
-    }
-
-    @Override
-    protected boolean isStorageFull() {
-        return false;
-    }
 }

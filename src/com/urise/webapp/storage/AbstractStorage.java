@@ -1,8 +1,6 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Objects;
@@ -12,58 +10,52 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public void save(Resume resume) {
         checkForNonNull(resume);
-        if (isStorageFull()) {
-            throw new StorageException("Storage overflowed", resume.getUuid());
-        } else {
-            int index = getIndex(resume.getUuid());
-            if (index >= 0) {
-                throw new ExistStorageException(resume.getUuid());
-            } else
-                insertResume(resume, index);
-        }
+        Object searchKey = getSearchKeyForSaveOrException(resume);
+        doSave(searchKey, resume);
     }
 
     @Override
     public Resume get(String uuid) {
-        int index = getIndexOrNotExistStorageException(uuid);
-        return getResume(index);
+        Object searchKey = getSearchKeyOrNotExistStorageException(uuid);
+        return doGet(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        int index = getIndexOrNotExistStorageException(uuid);
-        deleteResume(index);
+        Object searchKey = getSearchKeyOrNotExistStorageException(uuid);
+        doDelete(searchKey);
     }
 
     @Override
     public void update(Resume resume) {
         checkForNonNull(resume);
-
-        int index = getIndexOrNotExistStorageException(resume.getUuid());
-        updateResume(resume, index);
-    }
-
-    private int getIndexOrNotExistStorageException(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return index;
+        Object searchKey = getSearchKeyOrNotExistStorageException(resume.getUuid());
+        doUpdate(searchKey, resume);
     }
 
     private void checkForNonNull(Resume resume) {
         Objects.requireNonNull(resume, "Warning: Resume is null");
     }
 
-    protected abstract void updateResume(Resume resume, int index);
+    private Object getSearchKeyOrNotExistStorageException(String uuid) {
+        Object searchKey = getSearchKey(uuid);
 
-    protected abstract boolean isStorageFull();
+        if (searchKey == null) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchKey;
+    }
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Object getSearchKey(String uuid);
 
-    protected abstract void insertResume(Resume resume, int index);
+    protected abstract void doSave(Object searchKey, Resume resume);
 
-    protected abstract Resume getResume(int index);
+    protected abstract Resume doGet(Object searchKey);
 
-    protected abstract void deleteResume(int index);
+    protected abstract Object getSearchKeyForSaveOrException(Resume resume);
+
+    protected abstract void doUpdate(Object searchKey, Resume resume);
+
+    protected abstract void doDelete(Object searchKey);
+
 }

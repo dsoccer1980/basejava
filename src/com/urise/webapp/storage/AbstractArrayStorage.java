@@ -1,5 +1,7 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -10,19 +12,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
-    @Override
     protected boolean isStorageFull() {
         return size == STORAGE_LIMIT;
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return storage[index];
+    protected Resume doGet(Object searchKey) {
+        return storage[(Integer) searchKey];
     }
 
     @Override
-    protected void deleteResume(int index) {
-        fillDeletedElement(index);
+    protected void doDelete(Object searchKey) {
+        fillDeletedElement((Integer) searchKey);
         storage[size - 1] = null;
         size--;
     }
@@ -47,18 +48,41 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateResume(Resume resume, int index) {
-        storage[index] = resume;
+    protected void doUpdate(Object searchKey, Resume resume) {
+        storage[(Integer) searchKey] = resume;
     }
 
     @Override
-    protected void insertResume(Resume resume, int index) {
-        insertElement(resume, index);
-        size++;
+    protected Object getSearchKey(String uuid) {
+        int index = getIndex(uuid);
+        if (index == -1) {
+            return null;
+        }
+        return getIndex(uuid);
+    }
 
+    @Override
+    protected void doSave(Object searchKey, Resume resume) {
+        insertElement(resume, (Integer) searchKey);
+        size++;
+    }
+
+    @Override
+    protected Object getSearchKeyForSaveOrException(Resume resume) {
+        if (isStorageFull()) {
+            throw new StorageException("Storage overflowed", resume.getUuid());
+        } else {
+            int index = getIndex(resume.getUuid());
+            if (index >= 0) {
+                throw new ExistStorageException(resume.getUuid());
+            }
+            return index;
+        }
     }
 
     protected abstract void insertElement(Resume resume, int index);
 
     protected abstract void fillDeletedElement(int index);
+
+    protected abstract int getIndex(String uuid);
 }
