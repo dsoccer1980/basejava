@@ -14,11 +14,11 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String DUMMY = "dummy";
-    protected static int countResumesInStorageBeforeTest;
+    private int countResumesBeforeTest;
     private Resume resume1 = new Resume(UUID_1);
     private Resume resume2 = new Resume(UUID_2);
     private Resume resume3 = new Resume(UUID_3);
-    protected Resume resume4 = new Resume();
+    private Resume resume4 = new Resume();
     private Resume dummyResume = new Resume(DUMMY);
 
     @Before
@@ -27,7 +27,7 @@ public abstract class AbstractStorageTest {
         storage.save(resume1);
         storage.save(resume2);
         storage.save(resume3);
-        countResumesInStorageBeforeTest = storage.size();
+        countResumesBeforeTest = storage.size();
     }
 
     public AbstractStorageTest(Storage storage) {
@@ -37,7 +37,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void save() {
         storage.save(resume4);
-        assertEquals(countResumesInStorageBeforeTest + 1, storage.size());
+        assertEquals(++countResumesBeforeTest, storage.size());
         assertEquals(resume4, storage.get(resume4.getUuid()));
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void delete() {
         storage.delete(UUID_2);
-        assertEquals(countResumesInStorageBeforeTest - 1, storage.size());
+        assertEquals(--countResumesBeforeTest, storage.size());
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -76,7 +76,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() {
         storage.update(resume1);
-        assertEquals(countResumesInStorageBeforeTest, storage.size());
+        assertEquals(countResumesBeforeTest, storage.size());
         assertEquals(resume1, storage.get(UUID_1));
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void size() {
-        assertEquals(countResumesInStorageBeforeTest, storage.size());
+        assertEquals(countResumesBeforeTest, storage.size());
     }
 
 }
