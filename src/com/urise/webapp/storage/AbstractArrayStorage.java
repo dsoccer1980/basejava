@@ -49,17 +49,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected void doSave(Object searchKey, Resume resume) {
-        insertElement(resume, (Integer) searchKey);
-        size++;
-    }
-
-    @Override
-    protected Object getIfNotExist(Resume resume) {
         if (isStorageFull()) {
             throw new StorageException("Storage overflowed", resume.getUuid());
-        } else {
-            return super.getIfNotExist(resume);
         }
+        insertElement(resume, (Integer) searchKey);
+        size++;
     }
 
     @Override
