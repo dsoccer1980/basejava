@@ -44,6 +44,11 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
+    protected boolean isExist(Object searchKey) {
+        return false;
+    }
+
+    @Override
     protected void doDelete(Object indexOrKey) {
 
     }

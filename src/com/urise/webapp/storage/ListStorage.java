@@ -32,11 +32,12 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Object getSearchKey(String uuid) {
-        int index = getIndex(uuid);
-        if (index == -1) {
-            return null;
+        for (int i = 0; i < storage.size(); i++) {
+            if (storage.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
         }
-        return getIndex(uuid);
+        return -1;
     }
 
     @Override
@@ -45,14 +46,10 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getIfNotExist(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        }
-        return index;
+    protected boolean isExist(Object searchKey) {
+        return (Integer)searchKey >= 0;
     }
-    
+
     @Override
     protected void doDelete(Object searchKey) {
         storage.remove(((Integer)searchKey).intValue());
@@ -61,15 +58,6 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected void doUpdate(Object searchKey, Resume resume) {
         storage.set((Integer)searchKey, resume);
-    }
-
-    private int getIndex(String uuid) {
-        for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
 }

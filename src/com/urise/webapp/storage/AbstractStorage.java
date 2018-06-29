@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 
@@ -33,6 +34,14 @@ public abstract class AbstractStorage implements Storage {
         doUpdate(searchKey, resume);
     }
 
+    protected Object getIfNotExist(Resume resume) {
+        Object searchKey = getSearchKey(resume.getUuid());
+        if (isExist(searchKey)) {
+            throw new ExistStorageException(resume.getUuid());
+        }
+        return searchKey;
+    }
+
     private void checkForNonNull(Resume resume) {
         Objects.requireNonNull(resume, "Warning: Resume is null");
     }
@@ -40,19 +49,19 @@ public abstract class AbstractStorage implements Storage {
     private Object getIfExist(String uuid) {
         Object searchKey = getSearchKey(uuid);
 
-        if (searchKey == null) {
+        if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
         return searchKey;
     }
+
+    protected abstract boolean isExist(Object searchKey);
 
     protected abstract Object getSearchKey(String uuid);
 
     protected abstract void doSave(Object searchKey, Resume resume);
 
     protected abstract Resume doGet(Object searchKey);
-
-    protected abstract Object getIfNotExist(Resume resume);
 
     protected abstract void doUpdate(Object searchKey, Resume resume);
 
