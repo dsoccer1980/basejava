@@ -6,7 +6,10 @@ import com.urise.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
     protected Storage storage;
@@ -14,6 +17,9 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String DUMMY = "dummy";
+    private static final String FULL_NAME1 = "Petrov";
+    private static final String FULL_NAME2 = "Ivanov";
+    private static final String FULL_NAME3 = "Anjukov";
     private int countResumesBeforeTest;
     private Resume resume1 = new Resume(UUID_1);
     private Resume resume2 = new Resume(UUID_2);
@@ -24,6 +30,9 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
+        resume1.setFullName(FULL_NAME1);
+        resume2.setFullName(FULL_NAME2);
+        resume3.setFullName(FULL_NAME3);
         storage.save(resume1);
         storage.save(resume2);
         storage.save(resume3);
@@ -86,9 +95,9 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() {
-        Resume[] resumes = {resume1, resume2, resume3};
-        assertArrayEquals(resumes, storage.getAll());
+    public void getAllSorted() {
+        List<Resume> resumes = Arrays.asList(resume3, resume2, resume1);
+        assertEquals(resumes, storage.getAllSorted());
     }
 
     @Test
