@@ -5,57 +5,56 @@ import com.urise.webapp.model.Resume;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MapStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public void clear() {
-
+        storage.clear();
     }
 
     @Override
     public List<Resume> getAllSorted() {
-        return null;
+        return storage.values().stream().sorted(COMPARATOR_RESUME).collect(Collectors.toList());
     }
 
     @Override
     public int size() {
-        return 0;
+        return storage.size();
     }
 
     @Override
     protected Object getSearchKey(String uuid) {
-        return null;
+        return uuid;
     }
 
     @Override
     protected void doSave(Object searchKey, Resume resume) {
+        storage.put((String) searchKey, resume);
 
     }
 
     @Override
     protected Resume doGet(Object searchKey) {
-        return null;
-    }
-
-    @Override
-    protected Object getIfNotExist(Resume resume) {
-        return null;
+        return storage.get((String) searchKey);
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return false;
+        return storage.containsKey((String) searchKey);
     }
 
     @Override
     protected void doDelete(Object searchKey) {
+        storage.remove((String) searchKey);
 
     }
 
     @Override
     protected void doUpdate(Object searchKey, Resume resume) {
+        storage.put((String) searchKey, resume);
 
     }
 
