@@ -21,18 +21,15 @@ public abstract class AbstractStorageTest {
     private static final String FULL_NAME2 = "Ivanov";
     private static final String FULL_NAME3 = "Anjukov";
     private int countResumesBeforeTest;
-    private Resume resume1 = new Resume(UUID_1);
-    private Resume resume2 = new Resume(UUID_2);
-    private Resume resume3 = new Resume(UUID_3);
+    private Resume resume1 = new Resume(UUID_1, FULL_NAME1);
+    private Resume resume2 = new Resume(UUID_2, FULL_NAME2);
+    private Resume resume3 = new Resume(UUID_3, FULL_NAME3);
     private Resume resume4 = new Resume();
-    private Resume dummyResume = new Resume(DUMMY);
+    private Resume dummyResume = new Resume(DUMMY, "");
 
     @Before
     public void setUp() {
         storage.clear();
-        resume1.setFullName(FULL_NAME1);
-        resume2.setFullName(FULL_NAME2);
-        resume3.setFullName(FULL_NAME3);
         storage.save(resume1);
         storage.save(resume2);
         storage.save(resume3);

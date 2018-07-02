@@ -37,7 +37,7 @@ public abstract class AbstractStorage implements Storage {
         doUpdate(searchKey, resume);
     }
 
-    protected Object getIfNotExist(Resume resume) {
+    private Object getIfNotExist(Resume resume) {
         Object searchKey = getSearchKey(resume.getUuid());
         if (isExist(searchKey)) {
             throw new ExistStorageException(resume.getUuid());

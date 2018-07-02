@@ -52,7 +52,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (isStorageFull()) {
             throw new StorageException("Storage overflowed", resume.getUuid());
         }
-        insertElement(resume, (Integer) index);
+        insertElement((Integer) index, resume);
         size++;
     }
 
@@ -65,7 +65,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size == STORAGE_LIMIT;
     }
 
-    protected abstract void insertElement(Resume resume, int index);
+    protected abstract void insertElement(int index, Resume resume);
 
     protected abstract void fillDeletedElement(int index);
 

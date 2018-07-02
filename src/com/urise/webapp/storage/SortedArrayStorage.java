@@ -9,12 +9,12 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected Integer getSearchKey(String uuid) {
-        Resume searchResume = new Resume(uuid);
+        Resume searchResume = new Resume(uuid, "");
         return Arrays.binarySearch(storage, 0, size, searchResume);
     }
 
     @Override
-    protected void insertElement(Resume resume, int index) {
+    protected void insertElement(int index, Resume resume) {
         int insertPosition = -index - 1;
         if (insertPosition < size) {
             System.arraycopy(storage, insertPosition, storage, insertPosition + 1, size - insertPosition);
