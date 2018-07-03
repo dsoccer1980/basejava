@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MapUuidStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage<String> {
     protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
@@ -31,30 +31,29 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object uuid, Resume resume) {
-        storage.put((String) uuid, resume);
+    protected void doSave(String uuid, Resume resume) {
+        storage.put(uuid, resume);
+    }
+
+    @Override
+    protected Resume doGet(String uuid) {
+        return storage.get(uuid);
+    }
+
+    @Override
+    protected boolean isExist(String uuid) {
+        return storage.containsKey(uuid);
+    }
+
+    @Override
+    protected void doDelete(String uuid) {
+        storage.remove(uuid);
 
     }
 
     @Override
-    protected Resume doGet(Object uuid) {
-        return storage.get((String) uuid);
-    }
-
-    @Override
-    protected boolean isExist(Object uuid) {
-        return storage.containsKey((String) uuid);
-    }
-
-    @Override
-    protected void doDelete(Object uuid) {
-        storage.remove((String) uuid);
-
-    }
-
-    @Override
-    protected void doUpdate(Object uuid, Resume resume) {
-        storage.put((String) uuid, resume);
+    protected void doUpdate(String uuid, Resume resume) {
+        storage.put(uuid, resume);
 
     }
 

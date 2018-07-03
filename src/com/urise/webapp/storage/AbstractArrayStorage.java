@@ -7,19 +7,19 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
     @Override
-    protected Resume doGet(Object index) {
-        return storage[(Integer) index];
+    protected Resume doGet(Integer index) {
+        return storage[index];
     }
 
     @Override
-    protected void doDelete(Object index) {
-        fillDeletedElement((Integer) index);
+    protected void doDelete(Integer index) {
+        fillDeletedElement(index);
         storage[size - 1] = null;
         size--;
     }
@@ -43,22 +43,22 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doUpdate(Object index, Resume resume) {
-        storage[(Integer) index] = resume;
+    protected void doUpdate(Integer index, Resume resume) {
+        storage[index] = resume;
     }
 
     @Override
-    protected void doSave(Object index, Resume resume) {
+    protected void doSave(Integer index, Resume resume) {
         if (isStorageFull()) {
             throw new StorageException("Storage overflowed", resume.getUuid());
         }
-        insertElement((Integer) index, resume);
+        insertElement(index, resume);
         size++;
     }
 
     @Override
-    protected boolean isExist(Object index) {
-        return (Integer) index >= 0;
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
 
     private boolean isStorageFull() {
