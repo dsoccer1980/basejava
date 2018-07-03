@@ -17,14 +17,11 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String DUMMY = "dummy";
-    private static final String FULL_NAME1 = "Petrov";
-    private static final String FULL_NAME2 = "Ivanov";
-    private static final String FULL_NAME3 = "Anjukov";
     private int countResumesBeforeTest;
-    private Resume resume1 = new Resume(UUID_1, FULL_NAME1);
-    private Resume resume2 = new Resume(UUID_2, FULL_NAME2);
-    private Resume resume3 = new Resume(UUID_3, FULL_NAME3);
-    private Resume resume4 = new Resume();
+    private Resume resume1 = new Resume(UUID_1, "Petrov");
+    private Resume resume2 = new Resume(UUID_2, "Ivanov");
+    private Resume resume3 = new Resume(UUID_3, "Anjukov");
+    private Resume resume4 = new Resume("Anyname");
     private Resume dummyResume = new Resume(DUMMY, "");
 
     @Before
