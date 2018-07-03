@@ -31,30 +31,30 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object searchKey, Resume resume) {
-        storage.put((String) searchKey, resume);
+    protected void doSave(Object uuid, Resume resume) {
+        storage.put((String) uuid, resume);
 
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage.get((String) searchKey);
+    protected Resume doGet(Object uuid) {
+        return storage.get((String) uuid);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return storage.containsKey((String) searchKey);
+    protected boolean isExist(Object uuid) {
+        return storage.containsKey((String) uuid);
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        storage.remove((String) searchKey);
+    protected void doDelete(Object uuid) {
+        storage.remove((String) uuid);
 
     }
 
     @Override
-    protected void doUpdate(Object searchKey, Resume resume) {
-        storage.put((String) searchKey, resume);
+    protected void doUpdate(Object uuid, Resume resume) {
+        storage.put((String) uuid, resume);
 
     }
 
