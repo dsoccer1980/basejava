@@ -6,13 +6,16 @@ import com.urise.webapp.model.Resume;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public abstract class AbstractStorage<SK> implements Storage {
+    private static Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
     protected static final Comparator<Resume> COMPARATOR_RESUME = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     @Override
     public void save(Resume resume) {
+        LOG.info("Save " + resume);
         checkForNonNull(resume);
         SK searchKey = getIfNotExist(resume);
         doSave(searchKey, resume);
@@ -20,18 +23,21 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     @Override
     public Resume get(String uuid) {
+        LOG.info("Get " + uuid);
         SK searchKey = getIfExist(uuid);
         return doGet(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
+        LOG.info("Delete " + uuid);
         SK searchKey = getIfExist(uuid);
         doDelete(searchKey);
     }
 
     @Override
     public void update(Resume resume) {
+        LOG.info("Update " + resume);
         checkForNonNull(resume);
         SK searchKey = getIfExist(resume.getUuid());
         doUpdate(searchKey, resume);
@@ -40,6 +46,7 @@ public abstract class AbstractStorage<SK> implements Storage {
     private SK getIfNotExist(Resume resume) {
         SK searchKey = getSearchKey(resume.getUuid());
         if (isExist(searchKey)) {
+            LOG.warning("Resume " + resume + " already exists");
             throw new ExistStorageException(resume.getUuid());
         }
         return searchKey;
@@ -53,6 +60,7 @@ public abstract class AbstractStorage<SK> implements Storage {
         SK searchKey = getSearchKey(uuid);
 
         if (!isExist(searchKey)) {
+            LOG.warning("Resume with uuid = " + uuid + " does not exist");
             throw new NotExistStorageException(uuid);
         }
         return searchKey;
