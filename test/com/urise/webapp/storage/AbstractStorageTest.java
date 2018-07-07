@@ -2,12 +2,15 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,6 +31,31 @@ public abstract class AbstractStorageTest {
     public void setUp() {
         storage.clear();
         storage.save(resume1);
+        Map<ContactType, String> contacts = new HashMap<>();
+        contacts.put(ContactType.TELEFON, "+7(921) 855-0482");
+        contacts.put(ContactType.SKYPE, "grigory.kislin");
+        contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
+        resume1.setContact(contacts);
+        Map<SectionType, Section> sections = new HashMap<>();
+        sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        sections.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума,"));
+        sections.put(SectionType.ACHIEVEMENT,
+                new ListSection(Arrays.asList("С 2013 года: разработка проектов ", "Реализация двухфакторной аутентификации")));
+        sections.put(SectionType.QUALIFICATIONS,
+                new ListSection(Arrays.asList("JEE AS: GlassFish (v2.1, v3)", "Version control:")));
+        sections.put(SectionType.EXPERIENCE,
+                new HistorySection(new Link("Java Online Projects", "http://javaops.ru/"),
+                        "Автор проекта",
+                        LocalDate.of(2013, 10, 1),
+                        null, "Создание, организация и проведение Java онлайн проектов и стажировок."));
+        sections.put(SectionType.EDUCATION,
+                new HistorySection(new Link("Coursera", "https://www.coursera.org/course/progfun"),
+                        "Functional Programming Principles in Scala\" by Martin Odersky",
+                        LocalDate.of(2013, 3, 1),
+                        LocalDate.of(2013, 5, 1),
+                        ""));
+        resume1.setSections(sections);
+        System.out.println(resume1);
         storage.save(resume2);
         storage.save(resume3);
         countResumesBeforeTest = storage.size();
