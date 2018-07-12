@@ -41,12 +41,12 @@ public abstract class AbstractStorageTest {
         sections.put(SectionType.QUALIFICATIONS,
                 new ListSection(Arrays.asList("JEE AS: GlassFish (v2.1, v3)", "Version control:")));
         sections.put(SectionType.EXPERIENCE,
-                new HistorySection(new Link("Java Online Projects", "http://javaops.ru/"),
+                new OrganizationSection(new Link("Java Online Projects", "http://javaops.ru/"),
                         "Автор проекта",
                         LocalDate.of(2013, 10, 1),
                         null, "Создание, организация и проведение Java онлайн проектов и стажировок."));
         sections.put(SectionType.EDUCATION,
-                new HistorySection(new Link("Coursera", "https://www.coursera.org/course/progfun"),
+                new OrganizationSection(new Link("Coursera", "https://www.coursera.org/course/progfun"),
                         "Functional Programming Principles in Scala\" by Martin Odersky",
                         LocalDate.of(2013, 3, 1),
                         LocalDate.of(2013, 5, 1),

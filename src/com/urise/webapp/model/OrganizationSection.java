@@ -3,14 +3,14 @@ package com.urise.webapp.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class HistorySection implements Section {
+public class OrganizationSection implements Section {
     private Link link;
     private String title;
     private LocalDate dateBegin;
     private LocalDate dateEnd;
     private String text;
 
-    public HistorySection(Link link, String title, LocalDate dateBegin, LocalDate dateEnd, String text) {
+    public OrganizationSection(Link link, String title, LocalDate dateBegin, LocalDate dateEnd, String text) {
         this.link = link;
         this.title = title;
         this.dateBegin = dateBegin;
@@ -62,7 +62,7 @@ public class HistorySection implements Section {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        HistorySection that = (HistorySection) o;
+        OrganizationSection that = (OrganizationSection) o;
         return Objects.equals(link, that.link) &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(dateBegin, that.dateBegin) &&
@@ -77,7 +77,7 @@ public class HistorySection implements Section {
 
     @Override
     public String toString() {
-        return "HistorySection{" +
+        return "OrganizationSection{" +
                 "link=" + link +
                 ", title='" + title + '\'' +
                 ", dateBegin=" + dateBegin +
