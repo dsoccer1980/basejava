@@ -44,6 +44,7 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
+        LOG.info("Get all sorted");
         List<Resume> result = getCopyStorage();
         Collections.sort(result);
         return result;
