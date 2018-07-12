@@ -7,10 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -119,7 +116,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAllSorted() {
         List<Resume> resumes = Arrays.asList(resume1, resume2, resume3);
-        resumes.sort(AbstractStorage.COMPARATOR_RESUME);
+        Collections.sort(resumes);
         assertEquals(resumes, storage.getAllSorted());
     }
 
