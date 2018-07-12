@@ -15,10 +15,8 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> copyStorage = new ArrayList<>(storage);
-        copyStorage.sort(COMPARATOR_RESUME);
-        return copyStorage;
+    protected List<Resume> getCopyStorage() {
+        return new ArrayList<>(storage);
     }
 
     @Override
