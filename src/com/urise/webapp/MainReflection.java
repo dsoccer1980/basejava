@@ -33,17 +33,28 @@ public class MainReflection {
                 new ListSection(Arrays.asList("С 2013 года: разработка проектов ", "Реализация двухфакторной аутентификации")));
         sections.put(SectionType.QUALIFICATIONS,
                 new ListSection(Arrays.asList("JEE AS: GlassFish (v2.1, v3)", "Version control:")));
-        sections.put(SectionType.EXPERIENCE,
-                new OrganizationSection(new Link("Java Online Projects", "http://javaops.ru/"),
-                        "Автор проекта",
-                        LocalDate.of(2013, 10, 1),
-                        null, "Создание, организация и проведение Java онлайн проектов и стажировок."));
-        sections.put(SectionType.EDUCATION,
-                new OrganizationSection(new Link("Coursera", "https://www.coursera.org/course/progfun"),
-                        "Functional Programming Principles in Scala\" by Martin Odersky",
-                        LocalDate.of(2013, 3, 1),
-                        LocalDate.of(2013, 5, 1),
-                        ""));
+
+        Organization experience1 = new Organization(new Link("Java Online Projects", "http://javaops.ru/"),
+                "Автор проекта",
+                LocalDate.of(2013, 10, 1),
+                null, "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        Organization experience2 = new Organization(new Link("Wrike", "https://www.wrike.com/"),
+                "Старший разработчик (backend)",
+                LocalDate.of(2014, 10, 1),
+                LocalDate.of(2016, 1, 1), "Проектирование и разработка онлайн платформы управления проектами Wrike");
+        sections.put(SectionType.EXPERIENCE, new OrganizationSection(Arrays.asList(experience1, experience2)));
+
+        Organization education1 = new Organization(new Link("Coursera", "https://www.coursera.org/course/progfun"),
+                "Functional Programming Principles in Scala\" by Martin Odersky",
+                LocalDate.of(2013, 3, 1),
+                LocalDate.of(2013, 5, 1),
+                "");
+        Organization education2 = new Organization(new Link("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"),
+                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"",
+                LocalDate.of(2011, 3, 1),
+                LocalDate.of(2011, 4, 1),
+                "");
+        sections.put(SectionType.EDUCATION, new OrganizationSection(Arrays.asList(education1, education2)));
         resume.setSections(sections);
         System.out.println(resume);
     }
