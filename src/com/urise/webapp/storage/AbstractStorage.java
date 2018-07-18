@@ -50,8 +50,6 @@ public abstract class AbstractStorage<SK> implements Storage {
         return result;
     }
 
-    protected abstract List<Resume> getCopyStorage();
-
     private SK getIfNotExist(Resume resume) {
         SK searchKey = getSearchKey(resume.getUuid());
         if (isExist(searchKey)) {
@@ -74,6 +72,8 @@ public abstract class AbstractStorage<SK> implements Storage {
         }
         return searchKey;
     }
+
+    protected abstract List<Resume> getCopyStorage();
 
     protected abstract boolean isExist(SK searchKey);
 
