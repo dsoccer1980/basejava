@@ -1,10 +1,13 @@
 package com.urise.webapp.model;
 
+import java.util.Objects;
+
 public class Link {
     private String title;
     private String link;
 
     public Link(String title, String link) {
+        Objects.requireNonNull(title, "title cannot be null");
         this.title = title;
         this.link = link;
     }
@@ -14,6 +17,7 @@ public class Link {
     }
 
     public void setTitle(String title) {
+        Objects.requireNonNull(title, "title cannot be null");
         this.title = title;
     }
 

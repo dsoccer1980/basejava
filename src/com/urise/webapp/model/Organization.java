@@ -11,7 +11,22 @@ public class Organization {
     private String text;
 
     public Organization(Link link, String title, LocalDate dateBegin, LocalDate dateEnd, String text) {
+        Objects.requireNonNull(link, "link cannot be null");
+        Objects.requireNonNull(title, "title cannot be null");
+        Objects.requireNonNull(dateBegin, "dateBegin cannot be null");
+        Objects.requireNonNull(dateEnd, "dateEnd cannot be null");
         this.link = link;
+        this.title = title;
+        this.dateBegin = dateBegin;
+        this.dateEnd = dateEnd;
+        this.text = text;
+    }
+
+    public Organization(String titleLink, String link, String title, LocalDate dateBegin, LocalDate dateEnd, String text) {
+        Objects.requireNonNull(title, "title cannot be null");
+        Objects.requireNonNull(dateBegin, "dateBegin cannot be null");
+        Objects.requireNonNull(dateEnd, "dateEnd cannot be null");
+        this.link = new Link(titleLink, link);
         this.title = title;
         this.dateBegin = dateBegin;
         this.dateEnd = dateEnd;
@@ -23,6 +38,7 @@ public class Organization {
     }
 
     public void setLink(Link link) {
+        Objects.requireNonNull(link, "link cannot be null");
         this.link = link;
     }
 
@@ -31,6 +47,7 @@ public class Organization {
     }
 
     public void setTitle(String title) {
+        Objects.requireNonNull(title, "title cannot be null");
         this.title = title;
     }
 
@@ -39,6 +56,7 @@ public class Organization {
     }
 
     public void setDateBegin(LocalDate dateBegin) {
+        Objects.requireNonNull(dateBegin, "dateBegin cannot be null");
         this.dateBegin = dateBegin;
     }
 
@@ -47,6 +65,7 @@ public class Organization {
     }
 
     public void setDateEnd(LocalDate dateEnd) {
+        Objects.requireNonNull(dateEnd, "dateEnd cannot be null");
         this.dateEnd = dateEnd;
     }
 
