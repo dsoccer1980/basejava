@@ -3,18 +3,20 @@ package com.urise.webapp.model;
 import java.util.Objects;
 
 public class TextSection implements Section {
-    private String text;
+    private String content;
 
-    public TextSection(String text) {
-        this.text = text;
+    public TextSection(String content) {
+        Objects.requireNonNull(content, "content cannot be null");
+        this.content = content;
     }
 
-    public String getText() {
-        return text;
+    public String getContent() {
+        return content;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setContent(String content) {
+        Objects.requireNonNull(content, "content cannot be null");
+        this.content = content;
     }
 
     @Override
@@ -22,18 +24,18 @@ public class TextSection implements Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TextSection that = (TextSection) o;
-        return Objects.equals(text, that.text);
+        return Objects.equals(content, that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text);
+        return Objects.hash(content);
     }
 
     @Override
     public String toString() {
         return "TextSection{" +
-                "text='" + text + '\'' +
+                "content='" + content + '\'' +
                 '}';
     }
 }

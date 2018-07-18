@@ -8,6 +8,7 @@ public class OrganizationSection implements Section {
     private List<Organization> list;
 
     public OrganizationSection(List<Organization> list) {
+        Objects.requireNonNull(list, "list cannot be null");
         this.list = list;
     }
 
@@ -16,6 +17,7 @@ public class OrganizationSection implements Section {
     }
 
     public void setList(List<Organization> list) {
+        Objects.requireNonNull(list, "list cannot be null");
         this.list = list;
     }
 

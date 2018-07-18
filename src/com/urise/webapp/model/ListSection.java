@@ -7,6 +7,7 @@ public class ListSection implements Section {
     private List<String> items;
 
     public ListSection(List<String> items) {
+        Objects.requireNonNull(items, "items cannot be null");
         this.items = items;
     }
 
@@ -15,6 +16,7 @@ public class ListSection implements Section {
     }
 
     public void setItems(List<String> items) {
+        Objects.requireNonNull(items, "items cannot be null");
         this.items = items;
     }
 
