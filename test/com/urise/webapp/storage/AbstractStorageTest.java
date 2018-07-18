@@ -2,11 +2,11 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.ContactType;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -33,6 +33,62 @@ public abstract class AbstractStorageTest {
         contacts.put(ContactType.SKYPE, "grigory.kislin");
         contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
         resume1.setContact(contacts);
+        Map<SectionType, Section> sections = new HashMap<>();
+        sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        sections.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума,"));
+        sections.put(SectionType.ACHIEVEMENT,
+                new ListSection(Arrays.asList("С 2013 года: разработка проектов ", "Реализация двухфакторной аутентификации")));
+        sections.put(SectionType.QUALIFICATIONS,
+                new ListSection(Arrays.asList("JEE AS: GlassFish (v2.1, v3)", "Version control:")));
+
+        Organization workOrganization1 = new Organization("Java Online Projects", "http://javaops.ru/");
+        OrganizationPosition organizationPosition1 = new OrganizationPosition(
+                "Автор проекта",
+                LocalDate.of(2013, 10, 1),
+                null, "Создание, организация и проведение Java онлайн проектов и стажировок.");
+
+
+        Map<Organization, List<OrganizationPosition>> experience = new HashMap<>();
+        experience.put(workOrganization1, Arrays.asList(organizationPosition1));
+
+
+        Organization workOrganization2 = new Organization("RIT Center", null);
+        OrganizationPosition organizationPosition3 = new OrganizationPosition(
+                "Java архитектор",
+                LocalDate.of(2012, 4, 1),
+                LocalDate.of(2014, 10, 1), "Организация процесса разработки системы ERP для разных окружений");
+        experience.put(workOrganization2, Arrays.asList(organizationPosition3));
+
+        sections.put(SectionType.EXPERIENCE, new OrganizationSection(experience));
+
+        Organization educationOrganization = new Organization("Coursera", "https://www.coursera.org/course/progfun");
+
+        OrganizationPosition organizationPosition4 = new OrganizationPosition(
+                "Functional Programming Principles in Scala\" by Martin Odersky",
+                LocalDate.of(2013, 3, 1),
+                LocalDate.of(2013, 5, 1),
+                "");
+
+        Organization educationOrganization2 = new Organization("Санкт-Петербургский национальный исследовательский" +
+                " университет информационных технологий, механики и оптики", "http://www.ifmo.ru/");
+        OrganizationPosition organizationPosition5 = new OrganizationPosition(
+                "Аспирантура (программист С, С++)",
+                LocalDate.of(1993, 9, 1),
+                LocalDate.of(1996, 7, 1),
+                "");
+        OrganizationPosition organizationPosition6 = new OrganizationPosition(
+                "Инженер (программист Fortran, C)",
+                LocalDate.of(1987, 9, 1),
+                LocalDate.of(1993, 7, 1),
+                "");
+
+        Map<Organization, List<OrganizationPosition>> education = new HashMap<>();
+        education.put(educationOrganization, Arrays.asList(organizationPosition4));
+        education.put(educationOrganization2, Arrays.asList(organizationPosition5, organizationPosition6));
+
+        sections.put(SectionType.EDUCATION, new OrganizationSection(education));
+        resume2.setSections(sections);
+
         storage.save(resume2);
         storage.save(resume3);
         countResumesBeforeTest = storage.size();
