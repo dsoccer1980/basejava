@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainReflection {
@@ -34,27 +35,48 @@ public class MainReflection {
         sections.put(SectionType.QUALIFICATIONS,
                 new ListSection(Arrays.asList("JEE AS: GlassFish (v2.1, v3)", "Version control:")));
 
-        Organization experience1 = new Organization(new Link("Java Online Projects", "http://javaops.ru/"),
+        Organization organization1 = new Organization("Java Online Projects", "http://javaops.ru/");
+        OrganizationPosition experience1 = new OrganizationPosition(
                 "Автор проекта",
                 LocalDate.of(2013, 10, 1),
                 null, "Создание, организация и проведение Java онлайн проектов и стажировок.");
-        Organization experience2 = new Organization(new Link("Wrike", "https://www.wrike.com/"),
+        OrganizationPosition experience2 = new OrganizationPosition(
                 "Старший разработчик (backend)",
                 LocalDate.of(2014, 10, 1),
                 LocalDate.of(2016, 1, 1), "Проектирование и разработка онлайн платформы управления проектами Wrike");
-        sections.put(SectionType.EXPERIENCE, new OrganizationSection(Arrays.asList(experience1, experience2)));
 
-        Organization education1 = new Organization(new Link("Coursera", "https://www.coursera.org/course/progfun"),
+        List<OrganizationPosition> organizationPositions = Arrays.asList(experience1, experience2);
+        Map<Organization, List<OrganizationPosition>> organizationSection1 = new HashMap<>();
+        organizationSection1.put(organization1, organizationPositions);
+
+        sections.put(SectionType.EXPERIENCE, new OrganizationSection(organizationSection1));
+
+        Organization workOrganization = new Organization("RIT Center", null);
+        OrganizationPosition experience3 = new OrganizationPosition(
+                "Java архитектор",
+                LocalDate.of(2012, 4, 1),
+                LocalDate.of(2014, 10, 1), "Организация процесса разработки системы ERP для разных окружений");
+        organizationSection1.put(workOrganization, Arrays.asList(experience3));
+
+
+        Organization educationOrganization = new Organization("Coursera", "https://www.coursera.org/course/progfun");
+
+
+        OrganizationPosition education1 = new OrganizationPosition(
                 "Functional Programming Principles in Scala\" by Martin Odersky",
                 LocalDate.of(2013, 3, 1),
                 LocalDate.of(2013, 5, 1),
                 "");
-        Organization education2 = new Organization(new Link("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"),
+        OrganizationPosition education2 = new OrganizationPosition(
                 "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"",
                 LocalDate.of(2011, 3, 1),
                 LocalDate.of(2011, 4, 1),
                 "");
-        sections.put(SectionType.EDUCATION, new OrganizationSection(Arrays.asList(education1, education2)));
+
+        List<OrganizationPosition> organizationPositions2 = Arrays.asList(education1, education2);
+        Map<Organization, List<OrganizationPosition>> organizationSection2 = new HashMap<>();
+        organizationSection2.put(educationOrganization, organizationPositions);
+        sections.put(SectionType.EDUCATION, new OrganizationSection(organizationSection2));
         resume.setSections(sections);
         System.out.println(resume);
     }

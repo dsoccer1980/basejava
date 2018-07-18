@@ -1,24 +1,26 @@
 package com.urise.webapp.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class OrganizationSection implements Section {
-    private List<Organization> list;
 
-    public OrganizationSection(List<Organization> list) {
-        Objects.requireNonNull(list, "list cannot be null");
-        this.list = list;
+    private Map<Organization, List<OrganizationPosition>> section = new HashMap<>();
+
+    public OrganizationSection(Map<Organization, List<OrganizationPosition>> section) {
+        Objects.requireNonNull(section, "section cannot be null");
+        this.section = section;
     }
 
-    public List<Organization> getList() {
-        return new ArrayList<>(list);
+    public Map<Organization, List<OrganizationPosition>> getSection() {
+        return new HashMap<>(section);
     }
 
-    public void setList(List<Organization> list) {
-        Objects.requireNonNull(list, "list cannot be null");
-        this.list = list;
+    public void setSection(Map<Organization, List<OrganizationPosition>> section) {
+        Objects.requireNonNull(section, "section cannot be null");
+        this.section = section;
     }
 
     @Override
@@ -26,18 +28,18 @@ public class OrganizationSection implements Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrganizationSection that = (OrganizationSection) o;
-        return Objects.equals(list, that.list);
+        return Objects.equals(section, that.section);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(list);
+        return Objects.hash(section);
     }
 
     @Override
     public String toString() {
         return "OrganizationSection{" +
-                "list=" + list +
+                "section=" + section +
                 '}';
     }
 }
