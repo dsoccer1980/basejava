@@ -2,6 +2,7 @@ package com.urise.webapp.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -11,13 +12,7 @@ public class FileUtil {
         List<File> result = new ArrayList<>();
         File[] files = dir.listFiles();
         if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    result.addAll(getFiles(file));
-                } else {
-                    result.add(file);
-                }
-            }
+            result.addAll(Arrays.asList(files));
         }
         return result;
     }
@@ -26,11 +21,7 @@ public class FileUtil {
         File[] files = dir.listFiles();
         if (files != null) {
             for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteFiles(file);
-                } else {
-                    file.delete();
-                }
+                file.delete();
             }
         }
     }

@@ -59,7 +59,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(File file, Resume r) {
         try {
             file.createNewFile();
-            doWrite(file, r);
+            doUpdate(file, r);
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
@@ -67,29 +67,29 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected Resume doGet(File file) {
-        if (isExist(file)) {
+        try {
             return doRead(file);
-        } else {
-            throw new IllegalArgumentException(file + " does not exist");
+        } catch (IOException e) {
+            throw new StorageException("IO error", file.getName(), e);
         }
     }
 
     @Override
     protected void doDelete(File file) {
-        file.delete();
+        if (!file.delete()) {
+            throw new StorageException("IO error", file.getName());
+        }
     }
 
     @Override
     protected List<Resume> getCopyStorage() {
         List<File> files = FileUtil.getFiles(directory);
         List<Resume> result = new ArrayList<>();
-        for (File file : files) {
-            result.add(doGet(file));
-        }
+        files.forEach(file -> result.add(doGet(file)));
         return result;
     }
 
-    protected abstract Resume doRead(File file);
+    protected abstract Resume doRead(File file) throws IOException;
 
     protected abstract void doWrite(File file, Resume r) throws IOException;
 }
