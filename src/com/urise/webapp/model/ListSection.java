@@ -1,5 +1,6 @@
 package com.urise.webapp.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,6 +10,10 @@ public class ListSection implements Section {
     public ListSection(List<String> items) {
         Objects.requireNonNull(items, "items cannot be null");
         this.items = items;
+    }
+
+    public ListSection(String... items) {
+        this(Arrays.asList(items));
     }
 
     public List<String> getItems() {
