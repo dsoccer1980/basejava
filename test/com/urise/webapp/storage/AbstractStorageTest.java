@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.*;
 
+import static com.urise.webapp.util.DateUtil.NOW;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
@@ -41,52 +42,47 @@ public abstract class AbstractStorageTest {
         sections.put(SectionType.QUALIFICATIONS,
                 new ListSection(Arrays.asList("JEE AS: GlassFish (v2.1, v3)", "Version control:")));
 
-        Organization workOrganization1 = new Organization("Java Online Projects", "http://javaops.ru/");
-        OrganizationPosition organizationPosition1 = new OrganizationPosition(
+        Organization.Position organizationPosition1 = new Organization.Position(
                 "Автор проекта",
                 LocalDate.of(2013, 10, 1),
-                null, "Создание, организация и проведение Java онлайн проектов и стажировок.");
+                NOW, "Создание, организация и проведение Java онлайн проектов и стажировок.");
 
 
-        Map<Organization, List<OrganizationPosition>> experience = new HashMap<>();
-        experience.put(workOrganization1, Arrays.asList(organizationPosition1));
+        Organization workOrganization1 = new Organization("Java Online Projects", "http://javaops.ru/", organizationPosition1);
 
-
-        Organization workOrganization2 = new Organization("RIT Center", null);
-        OrganizationPosition organizationPosition3 = new OrganizationPosition(
+        Organization.Position organizationPosition2 = new Organization.Position(
                 "Java архитектор",
                 LocalDate.of(2012, 4, 1),
                 LocalDate.of(2014, 10, 1), "Организация процесса разработки системы ERP для разных окружений");
-        experience.put(workOrganization2, Arrays.asList(organizationPosition3));
+        Organization workOrganization2 = new Organization("RIT Center", null, organizationPosition2);
 
-        sections.put(SectionType.EXPERIENCE, new OrganizationSection(experience));
+        OrganizationSection experience = new OrganizationSection(workOrganization1, workOrganization2);
+        sections.put(SectionType.EXPERIENCE, experience);
 
-        Organization educationOrganization = new Organization("Coursera", "https://www.coursera.org/course/progfun");
-
-        OrganizationPosition organizationPosition4 = new OrganizationPosition(
+        Organization.Position organizationPosition3 = new Organization.Position(
                 "Functional Programming Principles in Scala\" by Martin Odersky",
                 LocalDate.of(2013, 3, 1),
                 LocalDate.of(2013, 5, 1),
                 "");
 
-        Organization educationOrganization2 = new Organization("Санкт-Петербургский национальный исследовательский" +
-                " университет информационных технологий, механики и оптики", "http://www.ifmo.ru/");
-        OrganizationPosition organizationPosition5 = new OrganizationPosition(
+        Organization educationOrganization1 = new Organization("Coursera", "https://www.coursera.org/course/progfun", organizationPosition3);
+
+        Organization.Position organizationPosition4 = new Organization.Position(
                 "Аспирантура (программист С, С++)",
                 LocalDate.of(1993, 9, 1),
                 LocalDate.of(1996, 7, 1),
                 "");
-        OrganizationPosition organizationPosition6 = new OrganizationPosition(
+        Organization.Position organizationPosition5 = new Organization.Position(
                 "Инженер (программист Fortran, C)",
                 LocalDate.of(1987, 9, 1),
                 LocalDate.of(1993, 7, 1),
                 "");
+        Organization educationOrganization2 = new Organization("Санкт-Петербургский национальный исследовательский" +
+                " университет информационных технологий, механики и оптики", "http://www.ifmo.ru/", organizationPosition4, organizationPosition5);
 
-        Map<Organization, List<OrganizationPosition>> education = new HashMap<>();
-        education.put(educationOrganization, Arrays.asList(organizationPosition4));
-        education.put(educationOrganization2, Arrays.asList(organizationPosition5, organizationPosition6));
 
-        sections.put(SectionType.EDUCATION, new OrganizationSection(education));
+        OrganizationSection education = new OrganizationSection(educationOrganization1, educationOrganization2);
+        sections.put(SectionType.EDUCATION, education);
         resume2.setSections(sections);
 
         storage.save(resume2);

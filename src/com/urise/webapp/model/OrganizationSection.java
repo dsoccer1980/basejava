@@ -1,26 +1,24 @@
 package com.urise.webapp.model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class OrganizationSection implements Section {
 
-    private Map<Organization, List<OrganizationPosition>> section = new HashMap<>();
+    private List<Organization> section = new ArrayList<>();
 
-    public OrganizationSection(Map<Organization, List<OrganizationPosition>> section) {
-        Objects.requireNonNull(section, "section cannot be null");
+    public OrganizationSection(List<Organization> section) {
         this.section = section;
     }
 
-    public Map<Organization, List<OrganizationPosition>> getSection() {
-        return new HashMap<>(section);
+    public OrganizationSection(Organization... section) {
+        this(Arrays.asList(section));
     }
 
-    public void setSection(Map<Organization, List<OrganizationPosition>> section) {
-        Objects.requireNonNull(section, "section cannot be null");
-        this.section = section;
+    public List<Organization> getSection() {
+        return section;
     }
 
     @Override
