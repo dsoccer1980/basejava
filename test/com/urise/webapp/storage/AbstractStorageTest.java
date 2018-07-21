@@ -6,6 +6,7 @@ import com.urise.webapp.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -13,6 +14,7 @@ import static com.urise.webapp.util.DateUtil.NOW;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File("./storage");
     protected Storage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -28,7 +30,6 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
-        storage.save(resume1);
         Map<ContactType, String> contacts = new HashMap<>();
         contacts.put(ContactType.TELEFON, "+7(921) 855-0482");
         contacts.put(ContactType.SKYPE, "grigory.kislin");
@@ -83,8 +84,9 @@ public abstract class AbstractStorageTest {
 
         OrganizationSection education = new OrganizationSection(educationOrganization1, educationOrganization2);
         sections.put(SectionType.EDUCATION, education);
-        resume2.setSections(sections);
+        resume1.setSections(sections);
 
+        storage.save(resume1);
         storage.save(resume2);
         storage.save(resume3);
         countResumesBeforeTest = storage.size();
@@ -108,7 +110,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() {
-        assertEquals(resume2, storage.get(UUID_2));
+        assertEquals(resume1, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)

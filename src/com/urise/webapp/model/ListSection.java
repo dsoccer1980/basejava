@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ListSection implements Section {
+public class ListSection extends Section {
+    private static final long serialVersionUID = 1L;
+
     private List<String> items;
 
     public ListSection(List<String> items) {
