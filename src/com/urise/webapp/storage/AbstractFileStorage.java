@@ -38,7 +38,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        return directory.listFiles().length;
+        File[] files = directory.listFiles();
+        if (files != null) {
+            return files.length;
+        } else {
+            throw new IllegalArgumentException("Cannot work with directory");
+        }
     }
 
     @Override
