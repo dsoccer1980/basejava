@@ -13,12 +13,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
+    private StreamStorage streamStorage;
 
-    protected AbstractPathStorage(String dir) {
+    protected PathStorage(String dir, StreamStorage streamStorage) {
+        Objects.requireNonNull(dir, "directory must not be null");
+        Objects.requireNonNull(streamStorage, "streamStorage must not be null");
         directory = Paths.get(dir);
-        Objects.requireNonNull(directory, "directory must not be null");
+        this.streamStorage = streamStorage;
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
@@ -100,7 +103,11 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-    protected abstract Resume doRead(InputStream is) throws IOException;
+    protected Resume doRead(InputStream is) throws IOException {
+        return streamStorage.doRead(is);
+    }
 
-    protected abstract void doWrite(OutputStream os, Resume r) throws IOException;
+    protected void doWrite(OutputStream os, Resume r) throws IOException {
+        streamStorage.doWrite(os, r);
+    }
 }

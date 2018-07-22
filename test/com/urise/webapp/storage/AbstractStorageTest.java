@@ -6,7 +6,6 @@ import com.urise.webapp.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -14,7 +13,7 @@ import static com.urise.webapp.util.DateUtil.NOW;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("./storage");
+    protected static final String STORAGE_DIR = "./storage";
     protected Storage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";

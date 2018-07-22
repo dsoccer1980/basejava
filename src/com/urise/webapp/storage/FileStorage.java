@@ -10,18 +10,21 @@ import java.util.List;
 import java.util.Objects;
 
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private File directory;
+    private StreamStorage streamStorage;
 
-    protected AbstractFileStorage(File directory) {
-        Objects.requireNonNull(directory, "directory must not be null");
+    protected FileStorage(String dir, StreamStorage streamStorage) {
+        Objects.requireNonNull(dir, "directory must not be null");
+        Objects.requireNonNull(streamStorage, "streamStorage must not be null");
+        directory = new File(dir);
+        this.streamStorage = streamStorage;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
         if (!directory.canRead() || !directory.canWrite()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
-        this.directory = directory;
     }
 
     @Override
@@ -101,7 +104,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         return result;
     }
 
-    protected abstract Resume doRead(InputStream is) throws IOException;
+    protected Resume doRead(InputStream is) throws IOException {
+        return streamStorage.doRead(is);
+    }
 
-    protected abstract void doWrite(OutputStream os, Resume r) throws IOException;
+    protected void doWrite(OutputStream os, Resume r) throws IOException {
+        streamStorage.doWrite(os, r);
+    }
 }
