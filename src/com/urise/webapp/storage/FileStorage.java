@@ -54,7 +54,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(File file, Resume r) {
         try {
-            doWrite(new BufferedOutputStream(new FileOutputStream(file)), r);
+            streamStorage.doWrite(new BufferedOutputStream(new FileOutputStream(file)), r);
         } catch (IOException e) {
             throw new StorageException("File write error", file.getName(), e);
         }
@@ -78,7 +78,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return streamStorage.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("File read error", file.getName(), e);
         }
@@ -102,13 +102,5 @@ public class FileStorage extends AbstractStorage<File> {
             result.add(doGet(file));
         }
         return result;
-    }
-
-    protected Resume doRead(InputStream is) throws IOException {
-        return streamStorage.doRead(is);
-    }
-
-    protected void doWrite(OutputStream os, Resume r) throws IOException {
-        streamStorage.doWrite(os, r);
     }
 }

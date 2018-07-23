@@ -4,7 +4,9 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,13 +49,13 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return Paths.get(directory.toString(), uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
     protected void doUpdate(Path file, Resume r) {
         try {
-            doWrite(new BufferedOutputStream(Files.newOutputStream(file)), r);
+            streamStorage.doWrite(new BufferedOutputStream(Files.newOutputStream(file)), r);
         } catch (IOException e) {
             throw new StorageException("Path write error", file.getFileName().toString(), e);
         }
@@ -77,7 +79,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path file) {
         try {
-            return doRead(new BufferedInputStream(Files.newInputStream(file)));
+            return streamStorage.doRead(new BufferedInputStream(Files.newInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Path read error", file.getFileName().toString(), e);
         }
@@ -101,13 +103,5 @@ public class PathStorage extends AbstractStorage<Path> {
         } catch (IOException e) {
             throw new StorageException("Directory read error", null, e);
         }
-    }
-
-    protected Resume doRead(InputStream is) throws IOException {
-        return streamStorage.doRead(is);
-    }
-
-    protected void doWrite(OutputStream os, Resume r) throws IOException {
-        streamStorage.doWrite(os, r);
     }
 }
