@@ -10,6 +10,9 @@ public class OrganizationSection extends Section {
 
     private List<Organization> section = new ArrayList<>();
 
+    public OrganizationSection() {
+    }
+
     public OrganizationSection(List<Organization> section) {
         this.section = section;
     }
