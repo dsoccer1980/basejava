@@ -33,7 +33,7 @@ public abstract class AbstractStorageTest {
         contacts.put(ContactType.TELEFON, "+7(921) 855-0482");
         contacts.put(ContactType.SKYPE, "grigory.kislin");
         contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
-        resume1.setContact(contacts);
+        resume1.setContacts(contacts);
         Map<SectionType, Section> sections = new HashMap<>();
         sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         sections.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума,"));
