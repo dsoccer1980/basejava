@@ -6,6 +6,9 @@ import com.urise.webapp.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -28,6 +31,12 @@ public abstract class AbstractStorageTest {
 
     @Before
     public void setUp() {
+        try {
+            Files.createDirectory(Paths.get(STORAGE_DIR));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         storage.clear();
         Map<ContactType, String> contacts = new HashMap<>();
         contacts.put(ContactType.TELEFON, "+7(921) 855-0482");
