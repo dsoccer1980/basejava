@@ -1,5 +1,6 @@
 package com.urise.webapp.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +8,7 @@ import java.util.Objects;
 public class ListSection extends Section {
     private static final long serialVersionUID = 1L;
 
-    private List<String> items;
+    private List<String> items = new ArrayList<>();
 
     public ListSection() {
     }
@@ -25,9 +26,9 @@ public class ListSection extends Section {
         return items;
     }
 
-    public void setItems(List<String> items) {
-        Objects.requireNonNull(items, "items cannot be null");
-        this.items = items;
+    public void addItem(String item) {
+        Objects.requireNonNull(item, "item cannot be null");
+        items.add(item);
     }
 
     @Override

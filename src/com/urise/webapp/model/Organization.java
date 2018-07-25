@@ -35,6 +35,14 @@ public class Organization implements Serializable {
         this(new Link(name, url), Arrays.asList(positions));
     }
 
+    public Link getHomePage() {
+        return homePage;
+    }
+
+    public List<Position> getPositions() {
+        return new ArrayList<>(positions);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

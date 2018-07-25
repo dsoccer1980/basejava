@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
@@ -31,10 +32,13 @@ public abstract class AbstractStorageTest {
 
     @Before
     public void setUp() {
-        try {
-            Files.createDirectory(Paths.get(STORAGE_DIR));
-        } catch (IOException e) {
-            e.printStackTrace();
+        Path dir = Paths.get(STORAGE_DIR);
+        if (!Files.exists(dir)) {
+            try {
+                Files.createDirectory(dir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         storage.clear();
@@ -44,50 +48,49 @@ public abstract class AbstractStorageTest {
         contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
         resume1.setContacts(contacts);
         Map<SectionType, Section> sections = new HashMap<>();
-        sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
-        sections.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума,"));
+        sections.put(SectionType.OBJECTIVE, new TextSection("objective content"));
+        sections.put(SectionType.PERSONAL, new TextSection("personal content"));
         sections.put(SectionType.ACHIEVEMENT,
-                new ListSection(Arrays.asList("С 2013 года: разработка проектов ", "Реализация двухфакторной аутентификации")));
+                new ListSection(Arrays.asList("achievement1", "achievement2")));
         sections.put(SectionType.QUALIFICATIONS,
-                new ListSection(Arrays.asList("JEE AS: GlassFish (v2.1, v3)", "Version control:")));
+                new ListSection(Arrays.asList("qualification1", "qualification2")));
 
         Organization.Position organizationPosition1 = new Organization.Position(
-                "Автор проекта",
+                "organizationPosition1 title",
                 LocalDate.of(2013, 10, 1),
-                NOW, "Создание, организация и проведение Java онлайн проектов и стажировок.");
+                NOW, "position1 text");
 
 
-        Organization workOrganization1 = new Organization("Java Online Projects", "http://javaops.ru/", organizationPosition1);
+        Organization workOrganization1 = new Organization("workOrganization1 name", "http://javaops.ru/", organizationPosition1);
 
         Organization.Position organizationPosition2 = new Organization.Position(
-                "Java архитектор",
+                "organizationPosition2 title",
                 LocalDate.of(2012, 4, 1),
-                LocalDate.of(2014, 10, 1), "Организация процесса разработки системы ERP для разных окружений");
-        Organization workOrganization2 = new Organization("RIT Center", null, organizationPosition2);
+                LocalDate.of(2014, 10, 1), "organizationPosition2 text");
+        Organization workOrganization2 = new Organization("workOrganization2 name", null, organizationPosition2);
 
         OrganizationSection experience = new OrganizationSection(workOrganization1, workOrganization2);
         sections.put(SectionType.EXPERIENCE, experience);
 
         Organization.Position organizationPosition3 = new Organization.Position(
-                "Functional Programming Principles in Scala\" by Martin Odersky",
+                "education position1 title",
                 LocalDate.of(2013, 3, 1),
                 LocalDate.of(2013, 5, 1),
                 "");
 
-        Organization educationOrganization1 = new Organization("Coursera", "https://www.coursera.org/course/progfun", organizationPosition3);
+        Organization educationOrganization1 = new Organization("educationOrganization1 name", "https://www.coursera.org/course/progfun", organizationPosition3);
 
         Organization.Position organizationPosition4 = new Organization.Position(
-                "Аспирантура (программист С, С++)",
+                "education position2 title",
                 LocalDate.of(1993, 9, 1),
                 LocalDate.of(1996, 7, 1),
                 "");
         Organization.Position organizationPosition5 = new Organization.Position(
-                "Инженер (программист Fortran, C)",
+                "education position3 title",
                 LocalDate.of(1987, 9, 1),
                 LocalDate.of(1993, 7, 1),
                 "");
-        Organization educationOrganization2 = new Organization("Санкт-Петербургский национальный исследовательский" +
-                " университет информационных технологий, механики и оптики", "http://www.ifmo.ru/", organizationPosition4, organizationPosition5);
+        Organization educationOrganization2 = new Organization("educationOrganization2 name", "http://www.ifmo.ru/", organizationPosition4, organizationPosition5);
 
 
         OrganizationSection education = new OrganizationSection(educationOrganization1, educationOrganization2);
