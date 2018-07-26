@@ -80,6 +80,7 @@ public class Organization implements Serializable {
             Objects.requireNonNull(title, "title cannot be null");
             Objects.requireNonNull(dateBegin, "dateBegin cannot be null");
             Objects.requireNonNull(dateEnd, "dateEnd cannot be null");
+            Objects.requireNonNull(text, "text cannot be null");
             this.title = title;
             this.dateBegin = dateBegin;
             this.dateEnd = dateEnd;

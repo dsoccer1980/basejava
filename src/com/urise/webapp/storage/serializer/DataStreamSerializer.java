@@ -1,11 +1,13 @@
 package com.urise.webapp.storage.serializer;
 
 
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class DataStreamSerializer implements StreamSerializer {
 
@@ -16,10 +18,10 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            contacts.forEach((k, v) -> {
+                writeUTF(dos, k.name());
+                writeUTF(dos, v);
+            });
 
             Map<SectionType, Section> sections = r.getSections();
             dos.writeInt(sections.size());
@@ -35,9 +37,7 @@ public class DataStreamSerializer implements StreamSerializer {
                     case QUALIFICATIONS:
                         List<String> items = ((ListSection) entry.getValue()).getItems();
                         dos.writeInt(items.size());
-                        for (String item : items) {
-                            dos.writeUTF(item);
-                        }
+                        items.forEach(item -> writeUTF(dos, item));
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
@@ -48,12 +48,12 @@ public class DataStreamSerializer implements StreamSerializer {
                             dos.writeUTF(Optional.ofNullable(organization.getHomePage().getUrl()).orElse("null"));
                             List<Organization.Position> positions = organization.getPositions();
                             dos.writeInt(positions.size());
-                            for (Organization.Position position : positions) {
-                                dos.writeUTF(position.getTitle());
-                                dos.writeUTF(position.getDateBegin().toString());
-                                dos.writeUTF(position.getDateEnd().toString());
-                                dos.writeUTF(position.getText());
-                            }
+                            positions.forEach(position -> {
+                                writeUTF(dos, position.getTitle());
+                                writeUTF(dos, position.getDateBegin().toString());
+                                writeUTF(dos, position.getDateEnd().toString());
+                                writeUTF(dos, position.getText());
+                            });
                         }
                 }
             }
@@ -66,12 +66,10 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
+            IntStream.range(0, dis.readInt())
+                    .forEach(i -> resume.addContact(ContactType.valueOf(readUTF(dis)), readUTF(dis)));
 
-            size = dis.readInt();
+            int size = dis.readInt();
             for (int i = 0; i < size; i++) {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
 
@@ -82,11 +80,8 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        int itemsSize = dis.readInt();
                         ListSection listSection = new ListSection();
-                        for (int j = 0; j < itemsSize; j++) {
-                            listSection.addItem(dis.readUTF());
-                        }
+                        IntStream.range(0, dis.readInt()).forEach(j -> listSection.addItem(readUTF(dis)));
                         resume.addSection(sectionType, listSection);
                         break;
                     case EDUCATION:
@@ -98,14 +93,13 @@ public class DataStreamSerializer implements StreamSerializer {
                             String url = dis.readUTF();
                             Link homePage = new Link(name, (url.equals("null") ? null : url));
                             List<Organization.Position> positions = new ArrayList<>();
-                            int positionsSize = dis.readInt();
-                            for (int k = 0; k < positionsSize; k++) {
-                                String title = dis.readUTF();
-                                LocalDate dateBegin = LocalDate.parse(dis.readUTF());
-                                LocalDate dateEnd = LocalDate.parse(dis.readUTF());
-                                String text = dis.readUTF();
-                                positions.add(new Organization.Position(title, dateBegin, dateEnd, text));
-                            }
+                            IntStream.range(0, dis.readInt())
+                                    .forEach(k -> positions.add(new Organization.Position(
+                                            readUTF(dis),
+                                            LocalDate.parse(readUTF(dis)),
+                                            LocalDate.parse(readUTF(dis)),
+                                            readUTF(dis)))
+                                    );
                             organizations.add(new Organization(homePage, positions));
                         }
                         resume.addSection(sectionType, new OrganizationSection(organizations));
@@ -114,4 +108,21 @@ public class DataStreamSerializer implements StreamSerializer {
             return resume;
         }
     }
+
+    private void writeUTF(DataOutputStream dos, String item) {
+        try {
+            dos.writeUTF(item);
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    private String readUTF(DataInputStream dis) {
+        try {
+            return dis.readUTF();
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
 }
