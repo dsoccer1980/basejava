@@ -1,13 +1,15 @@
 package com.urise.webapp.storage.serializer;
 
 
-import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 
 public class DataStreamSerializer implements StreamSerializer {
 
@@ -16,16 +18,13 @@ public class DataStreamSerializer implements StreamSerializer {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
-            Map<ContactType, String> contacts = r.getContacts();
-            dos.writeInt(contacts.size());
-            contacts.forEach((k, v) -> {
-                writeUTF(dos, k.name());
-                writeUTF(dos, v);
+
+            writeCollection(dos, r.getContacts().entrySet(), entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
             });
 
-            Map<SectionType, Section> sections = r.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+            writeCollection(dos, r.getSections().entrySet(), entry -> {
                 SectionType sectionType = entry.getKey();
                 dos.writeUTF(sectionType.name());
                 switch (sectionType) {
@@ -35,28 +34,22 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> items = ((ListSection) entry.getValue()).getItems();
-                        dos.writeInt(items.size());
-                        items.forEach(item -> writeUTF(dos, item));
+                        writeCollection(dos, ((ListSection) entry.getValue()).getItems(), dos::writeUTF);
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
-                        List<Organization> organizationList = ((OrganizationSection) entry.getValue()).getSection();
-                        dos.writeInt(organizationList.size());
-                        for (Organization organization : organizationList) {
+                        writeCollection(dos, ((OrganizationSection) entry.getValue()).getSection(), organization -> {
                             dos.writeUTF(organization.getHomePage().getName());
                             dos.writeUTF(Optional.ofNullable(organization.getHomePage().getUrl()).orElse("null"));
-                            List<Organization.Position> positions = organization.getPositions();
-                            dos.writeInt(positions.size());
-                            positions.forEach(position -> {
-                                writeUTF(dos, position.getTitle());
-                                writeUTF(dos, position.getDateBegin().toString());
-                                writeUTF(dos, position.getDateEnd().toString());
-                                writeUTF(dos, position.getText());
+                            writeCollection(dos, organization.getPositions(), position -> {
+                                dos.writeUTF(position.getTitle());
+                                dos.writeUTF(position.getDateBegin().toString());
+                                dos.writeUTF(position.getDateEnd().toString());
+                                dos.writeUTF(position.getText());
                             });
-                        }
+                        });
                 }
-            }
+            });
         }
     }
 
@@ -66,13 +59,10 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            IntStream.range(0, dis.readInt())
-                    .forEach(i -> resume.addContact(ContactType.valueOf(readUTF(dis)), readUTF(dis)));
+            readItems(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
 
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+            readItems(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
-
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
@@ -81,47 +71,50 @@ public class DataStreamSerializer implements StreamSerializer {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         ListSection listSection = new ListSection();
-                        IntStream.range(0, dis.readInt()).forEach(j -> listSection.addItem(readUTF(dis)));
+                        readItems(dis, () -> listSection.addItem(dis.readUTF()));
                         resume.addSection(sectionType, listSection);
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
-                        int organisationSize = dis.readInt();
                         List<Organization> organizations = new ArrayList<>();
-                        for (int j = 0; j < organisationSize; j++) {
+                        readItems(dis, () -> {
                             String name = dis.readUTF();
                             String url = dis.readUTF();
                             Link homePage = new Link(name, (url.equals("null") ? null : url));
                             List<Organization.Position> positions = new ArrayList<>();
-                            IntStream.range(0, dis.readInt())
-                                    .forEach(k -> positions.add(new Organization.Position(
-                                            readUTF(dis),
-                                            LocalDate.parse(readUTF(dis)),
-                                            LocalDate.parse(readUTF(dis)),
-                                            readUTF(dis)))
-                                    );
+                            readItems(dis, () -> positions.add(new Organization.Position(
+                                    dis.readUTF(),
+                                    LocalDate.parse(dis.readUTF()),
+                                    LocalDate.parse(dis.readUTF()),
+                                    dis.readUTF())));
                             organizations.add(new Organization(homePage, positions));
-                        }
+                        });
                         resume.addSection(sectionType, new OrganizationSection(organizations));
                 }
-            }
+            });
             return resume;
         }
     }
 
-    private void writeUTF(DataOutputStream dos, String item) {
-        try {
-            dos.writeUTF(item);
-        } catch (IOException e) {
-            throw new StorageException(e);
+    interface Writer<T> {
+        void write(T t) throws IOException;
+    }
+
+    interface Operator {
+        void operate() throws IOException;
+    }
+
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            writer.write(t);
         }
     }
 
-    private String readUTF(DataInputStream dis) {
-        try {
-            return dis.readUTF();
-        } catch (IOException e) {
-            throw new StorageException(e);
+    private void readItems(DataInputStream dis, Operator operator) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            operator.operate();
         }
     }
 

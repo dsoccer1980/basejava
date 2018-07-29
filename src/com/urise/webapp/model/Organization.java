@@ -8,10 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.urise.webapp.util.DateUtil.NOW;
 import static com.urise.webapp.util.DateUtil.of;
@@ -80,11 +77,10 @@ public class Organization implements Serializable {
             Objects.requireNonNull(title, "title cannot be null");
             Objects.requireNonNull(dateBegin, "dateBegin cannot be null");
             Objects.requireNonNull(dateEnd, "dateEnd cannot be null");
-            Objects.requireNonNull(text, "text cannot be null");
             this.title = title;
             this.dateBegin = dateBegin;
             this.dateEnd = dateEnd;
-            this.text = text;
+            this.text = Optional.ofNullable(text).orElse("");
         }
 
         public Position() {
