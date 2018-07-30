@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Link implements Serializable {
@@ -18,7 +19,11 @@ public class Link implements Serializable {
     public Link(String name, String url) {
         Objects.requireNonNull(name, "name cannot be null");
         this.name = name;
-        this.url = url;
+        this.url = Optional.ofNullable(url).orElse("");
+    }
+
+    public Link(String name) {
+        this(name, null);
     }
 
     public String getName() {

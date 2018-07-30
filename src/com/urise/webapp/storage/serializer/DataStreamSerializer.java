@@ -100,8 +100,8 @@ public class DataStreamSerializer implements StreamSerializer {
         void write(T t) throws IOException;
     }
 
-    interface Operator {
-        void operate() throws IOException;
+    interface Reader {
+        void read() throws IOException;
     }
 
     private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
@@ -111,10 +111,10 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void readItems(DataInputStream dis, Operator operator) throws IOException {
+    private void readItems(DataInputStream dis, Reader reader) throws IOException {
         int size = dis.readInt();
         for (int i = 0; i < size; i++) {
-            operator.operate();
+            reader.read();
         }
     }
 
