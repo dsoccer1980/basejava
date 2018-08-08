@@ -47,7 +47,7 @@ public abstract class AbstractStorageTest {
         contacts.put(ContactType.TELEFON, "+7(921) 855-0482");
         contacts.put(ContactType.SKYPE, "grigory.kislin");
         contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
-        resume1.setContacts(contacts);
+  //      resume1.setContacts(contacts);
         Map<SectionType, Section> sections = new HashMap<>();
         sections.put(SectionType.OBJECTIVE, new TextSection("objective content"));
         sections.put(SectionType.PERSONAL, new TextSection("personal content"));
@@ -96,7 +96,7 @@ public abstract class AbstractStorageTest {
 
         OrganizationSection education = new OrganizationSection(educationOrganization1, educationOrganization2);
         sections.put(SectionType.EDUCATION, education);
-        resume1.setSections(sections);
+   //     resume1.setSections(sections);
 
         storage.save(resume1);
         storage.save(resume2);
