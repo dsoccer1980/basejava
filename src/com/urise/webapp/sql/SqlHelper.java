@@ -2,25 +2,28 @@ package com.urise.webapp.sql;
 
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.StorageException;
-import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SqlHelper {
 
-    public static <T> T execute(ConnectionFactory connectionFactory, SqlExecutor<T> sqlExecutor, String sql, String... parameters) {
+    private final ConnectionFactory connectionFactory;
+
+    public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
+        connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    }
+
+    public <T> T execute(String sql, SqlExecutor<T> sqlExecutor) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            int index = 1;
-            for (String parameter : parameters) {
-                ps.setString(index++, parameter);
-            }
             return sqlExecutor.execute(ps);
-        } catch (PSQLException e) {
-            throw new ExistStorageException(e);
         } catch (SQLException e) {
+            if (e.getMessage().contains("duplicate key")) {
+                throw new ExistStorageException(e);
+            }
             throw new StorageException(e);
         }
     }
