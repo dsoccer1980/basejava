@@ -36,13 +36,13 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume r) {
-        sqlHelper.execute("UPDATE resume SET full_name=? WHERE uuid=?", ps -> {
+        sqlHelper.<Void>execute("UPDATE resume SET full_name=? WHERE uuid=?", ps -> {
             ps.setString(1, r.getFullName());
             ps.setString(2, r.getUuid());
             if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(r.getUuid());
             }
-            return true;
+            return null;
         });
     }
 
@@ -58,18 +58,18 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        sqlHelper.execute("DELETE FROM resume WHERE uuid=?", ps -> {
+        sqlHelper.<Void>execute("DELETE FROM resume WHERE uuid=?", ps -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
             }
-            return true;
+            return null;
         });
     }
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.execute("SELECT * FROM resume r ORDER BY full_name", ps -> {
+        return sqlHelper.execute("SELECT * FROM resume r ORDER BY full_name, uuid", ps -> {
             ResultSet rs = ps.executeQuery();
             List<Resume> result = new ArrayList<>();
             while (rs.next()) {
