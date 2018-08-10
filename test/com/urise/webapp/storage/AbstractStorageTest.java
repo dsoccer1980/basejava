@@ -47,7 +47,7 @@ public abstract class AbstractStorageTest {
         contacts.put(ContactType.TELEFON, "+7(921) 855-0482");
         contacts.put(ContactType.SKYPE, "grigory.kislin");
         contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
-  //      resume1.setContacts(contacts);
+        resume1.setContacts(contacts);
         Map<SectionType, Section> sections = new HashMap<>();
         sections.put(SectionType.OBJECTIVE, new TextSection("objective content"));
         sections.put(SectionType.PERSONAL, new TextSection("personal content"));
@@ -149,6 +149,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
+        Map<ContactType, String> contacts = resume1.getContacts();
+        contacts.put(ContactType.SKYPE, "NEW SKYPE");
+        resume1.setContacts(contacts);
         storage.update(resume1);
         assertEquals(countResumesBeforeTest, storage.size());
         assertEquals(resume1, storage.get(UUID_1));
