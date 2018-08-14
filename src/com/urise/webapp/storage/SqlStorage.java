@@ -66,7 +66,7 @@ public class SqlStorage implements Storage {
                         ps.execute();
                     }
 
-            insertContacts(conn, resume);
+                    insertContacts(conn, resume);
                     return null;
                 }
         );
@@ -75,13 +75,13 @@ public class SqlStorage implements Storage {
     @Override
     public void save(Resume resume) {
         sqlHelper.transactionalExecute(conn -> {
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
-                ps.setString(1, resume.getUuid());
-                ps.setString(2, resume.getFullName());
-                ps.execute();
-            }
-            insertContacts(conn, resume);
-            return null;
+                    try (PreparedStatement ps = conn.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
+                        ps.setString(1, resume.getUuid());
+                        ps.setString(2, resume.getFullName());
+                        ps.execute();
+                    }
+                    insertContacts(conn, resume);
+                    return null;
                 }
         );
     }
