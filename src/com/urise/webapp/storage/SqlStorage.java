@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,27 +107,19 @@ public class SqlStorage implements Storage {
                         " ORDER BY full_name, uuid",
                 ps -> {
                     ResultSet rs = ps.executeQuery();
-                    List<Resume> result = new ArrayList<>();
-                    String previousUuid = "";
-                    Resume resume = null;
+                    Map<String, Resume> map = new LinkedHashMap<>();
                     while (rs.next()) {
                         String uuid = rs.getString("uuid").trim();
-                        if (!previousUuid.equals(uuid)) {
-                            if (resume != null) {
-                                result.add(resume);
-                            }
+                        Resume resume = map.get(uuid);
+                        if (resume == null) {
                             resume = new Resume(uuid, rs.getString("full_name"));
+                            map.put(uuid, resume);
                         }
-
                         if (rs.getString("resume_uuid") != null) {
                             addContact(rs, resume);
                         }
-                        previousUuid = uuid;
                     }
-                    if (resume != null) {
-                        result.add(resume);
-                    }
-                    return result;
+                    return new ArrayList<>(map.values());
                 });
     }
 
