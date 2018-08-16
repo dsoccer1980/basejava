@@ -11,10 +11,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.*;
 
-import static com.urise.webapp.util.DateUtil.NOW;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
@@ -56,7 +54,7 @@ public abstract class AbstractStorageTest {
         sections.put(SectionType.QUALIFICATIONS,
                 new ListSection(Arrays.asList("qualification1", "qualification2")));
 
-        Organization.Position organizationPosition1 = new Organization.Position(
+       /* Organization.Position organizationPosition1 = new Organization.Position(
                 "organizationPosition1 title",
                 LocalDate.of(2013, 10, 1),
                 NOW, "position1 text");
@@ -95,8 +93,8 @@ public abstract class AbstractStorageTest {
 
 
         OrganizationSection education = new OrganizationSection(educationOrganization1, educationOrganization2);
-        sections.put(SectionType.EDUCATION, education);
-   //     resume1.setSections(sections);
+        sections.put(SectionType.EDUCATION, education);*/
+        resume1.setSections(sections);
 
         storage.save(resume1);
         storage.save(resume2);
