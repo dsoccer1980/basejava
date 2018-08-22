@@ -9,10 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SqlStorage implements Storage {
@@ -30,15 +27,13 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         return sqlHelper.execute("" +
-                        "    SELECT uuid, full_name, " +
+                        " SELECT uuid, full_name, " +
                         " c.type as contact_type, c.value as contact_value," +
                         " s.type as section_type, s.value as section_value" +
                         " FROM resume r " +
-                        " LEFT JOIN contact c " +
-                        "        ON r.uuid = c.resume_uuid " +
-                        " LEFT JOIN section s " +
-                        "        ON r.uuid = s.resume_uuid " +
-                        "     WHERE r.uuid =? ",
+                        " LEFT JOIN contact c ON r.uuid = c.resume_uuid" +
+                        " LEFT JOIN section s ON r.uuid = s.resume_uuid" +
+                        " WHERE r.uuid =? ",
                 ps -> {
                     ps.setString(1, uuid);
                     ResultSet rs = ps.executeQuery();
@@ -117,10 +112,8 @@ public class SqlStorage implements Storage {
                         " c.type as contact_type, c.value as contact_value," +
                         " s.type as section_type, s.value as section_value" +
                         " FROM resume r " +
-                        " LEFT JOIN contact c " +
-                        " ON r.uuid = c.resume_uuid  " +
-                        " LEFT JOIN section s " +
-                        " ON r.uuid = s.resume_uuid  " +
+                        " LEFT JOIN contact c ON r.uuid = c.resume_uuid  " +
+                        " LEFT JOIN section s ON r.uuid = s.resume_uuid  " +
                         " ORDER BY full_name, uuid",
                 ps -> {
                     ResultSet rs = ps.executeQuery();
@@ -138,6 +131,46 @@ public class SqlStorage implements Storage {
                     }
                     return new ArrayList<>(map.values());
                 });
+    }
+
+    public List<Resume> getAll() {
+        Map<String, Resume> map = new HashMap<>();
+        sqlHelper.execute("SELECT * FROM resume",
+                ps -> {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        String uuid = rs.getString("uuid").trim();
+                        map.put(uuid, new Resume(uuid, rs.getString("full_name")));
+
+                    }
+                    return null;
+                });
+        sqlHelper.execute("SELECT type as contact_type, value as contact_value, resume_uuid FROM contact",
+                ps -> {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        String uuid = rs.getString("resume_uuid").trim();
+                        Resume resume = map.get(uuid);
+                        if (resume != null) {
+                            addContact(rs, resume);
+                        }
+                    }
+                    return null;
+                });
+        sqlHelper.execute("SELECT type as section_type, value as section_value, resume_uuid FROM section",
+                ps -> {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        String uuid = rs.getString("resume_uuid").trim();
+                        Resume resume = map.get(uuid);
+                        if (resume != null) {
+                            addSection(rs, resume);
+                        }
+                    }
+                    return null;
+                });
+
+        return new ArrayList<>(map.values());
     }
 
     @Override
