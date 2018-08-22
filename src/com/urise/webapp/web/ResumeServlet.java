@@ -47,27 +47,41 @@ public class ResumeServlet extends HttpServlet {
         Map<ContactType, String> contacts = resume.getContacts();
         if (!contacts.isEmpty()) {
             response.getWriter().write("Contacts:<BR>");
+            response.getWriter().write("<TABLE cellpadding=2>");
             for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                response.getWriter().write(entry.getKey() + ": " + entry.getValue());
-                response.getWriter().write("<BR>");
+                response.getWriter().write("<TR>");
+                response.getWriter().write("<TD>" + entry.getKey() + "</TD>");
+                response.getWriter().write("<TD>" + entry.getValue() + "</TD>");
+                response.getWriter().write("</TR>");
             }
+            response.getWriter().write("</TABLE>");
         }
         Map<SectionType, Section> sections = resume.getSections();
         if (!sections.isEmpty()) {
             response.getWriter().write("Sections:<BR>");
+            response.getWriter().write("<TABLE cellpadding=2>");
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+                response.getWriter().write("<TR>");
                 SectionType key = entry.getKey();
                 switch (key) {
                     case OBJECTIVE:
                     case PERSONAL:
-                        response.getWriter().write(key + ": " + ((TextSection) entry.getValue()).getContent());
+                        response.getWriter().write("<TD>" + key + "</TD>");
+                        response.getWriter().write("<TD>" + ((TextSection) entry.getValue()).getContent() + "</TD>");
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        response.getWriter().write(key + ": " + ((ListSection) entry.getValue()).getItems());
+                        response.getWriter().write("<TD>" + key + "</TD>");
+                        List<String> items = ((ListSection) entry.getValue()).getItems();
+                        response.getWriter().write("<TD>");
+                        for (String item : items) {
+                            response.getWriter().write("<LI>" + item + "</LI>");
+                        }
+                        response.getWriter().write("</TD>");
                 }
-                response.getWriter().write("<BR>");
+                response.getWriter().write("</TR>");
             }
+            response.getWriter().write("</TABLE>");
         }
         response.getWriter().write("<BR><BR>");
     }
