@@ -68,12 +68,12 @@ public class SqlStorage implements Storage {
 
                     insertContacts(conn, resume);
 
-            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM section WHERE resume_uuid=?")) {
-                ps.setString(1, resume.getUuid());
-                ps.execute();
-            }
+                    try (PreparedStatement ps = conn.prepareStatement("DELETE FROM section WHERE resume_uuid=?")) {
+                        ps.setString(1, resume.getUuid());
+                        ps.execute();
+                    }
 
-            insertSections(conn, resume);
+                    insertSections(conn, resume);
                     return null;
                 }
         );
@@ -88,7 +88,7 @@ public class SqlStorage implements Storage {
                         ps.execute();
                     }
                     insertContacts(conn, resume);
-            insertSections(conn, resume);
+                    insertSections(conn, resume);
                     return null;
                 }
         );
