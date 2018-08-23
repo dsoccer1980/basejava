@@ -192,10 +192,7 @@ public class SqlStorage implements Storage {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         ListSection listSection = (ListSection) e.getValue();
-                        String joinSectionItems = listSection.getItems()
-                                .stream()
-                                .map(Object::toString)
-                                .collect(Collectors.joining("\n"));
+                        String joinSectionItems = String.join("\n", listSection.getItems());
                         ps.setString(3, joinSectionItems);
                 }
                 ps.addBatch();
