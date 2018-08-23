@@ -1,13 +1,15 @@
 package com.urise.webapp;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
 
 public class Config {
-    private static final String PROPERTIES_PATH = "config\\resumes.properties";
-    private static final File PROPS = new File(PROPERTIES_PATH);
+    private static final String PROPERTY_DIR = Optional.ofNullable(System.getenv("basejava_home")).orElse(".");
+    private static final File PROPS = new File(PROPERTY_DIR, "config\\resumes.properties");
     private static final Config INSTANCE = new Config();
 
     private Properties props = new Properties();
@@ -21,7 +23,7 @@ public class Config {
     }
 
     private Config() {
-        try (InputStream is = getClass().getResourceAsStream(PROPERTIES_PATH)) {
+        try (InputStream is = new FileInputStream(PROPS)) {
             props.load(is);
             storageDir = props.getProperty("storage.dir");
             dbUrl = props.getProperty("db.url");
