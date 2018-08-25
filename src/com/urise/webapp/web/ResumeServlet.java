@@ -2,7 +2,8 @@ package com.urise.webapp.web;
 
 import com.urise.webapp.Config;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.*;
+import com.urise.webapp.model.ContactType;
+import com.urise.webapp.model.Resume;
 import com.urise.webapp.storage.SqlStorage;
 import com.urise.webapp.storage.Storage;
 
@@ -36,8 +37,8 @@ public class ResumeServlet extends HttpServlet {
         List<Resume> resumes;
         response.getWriter().write("<TABLE border=1>");
         response.getWriter().write("<TR>");
-        response.getWriter().write("<TD><B>uuid</B></TD>");
-        response.getWriter().write("<TD><B>fullname</B></TD>");
+        response.getWriter().write("<TD><B>FULLNAME</B></TD>");
+        response.getWriter().write("<TD><B>EMAIL</B></TD>");
         response.getWriter().write("</TR>");
 
         if (uuid == null) {
@@ -58,8 +59,8 @@ public class ResumeServlet extends HttpServlet {
 
     private void showResume(HttpServletResponse response, Resume resume) throws IOException {
         response.getWriter().write("<TR>");
-        response.getWriter().write("<TD>" + resume.getUuid() + "</TD>");
-        response.getWriter().write("<TD>" + resume.getFullName() + "</TD>");
+        response.getWriter().write("<TD> <a href=resume?uuid=" + resume.getUuid() + ">" + resume.getFullName() + "</a></TD>");
+        response.getWriter().write("<TD>" + resume.getContacts().get(ContactType.EMAIL) + "</TD>");
         response.getWriter().write("</TR>");
     }
 }
