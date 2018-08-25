@@ -9,8 +9,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -107,43 +109,37 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        Map<String, Resume> map = new LinkedHashMap<>();
-        sqlHelper.execute("SELECT * FROM resume ORDER BY full_name, uuid",
-                ps -> {
-                    ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        String uuid = rs.getString("uuid").trim();
-                        map.put(uuid, new Resume(uuid, rs.getString("full_name")));
-
+        return sqlHelper.transactionalExecute(conn -> {
+            Map<String, Resume> resumes = new LinkedHashMap<>();
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String uuid = rs.getString("uuid").trim();
+                    resumes.put(uuid, new Resume(uuid, rs.getString("full_name")));
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("SELECT type AS contact_type, value AS contact_value, resume_uuid FROM contact")) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String uuid = rs.getString("resume_uuid").trim();
+                    Resume resume = resumes.get(uuid);
+                    if (resume != null) {
+                        addContact(rs, resume);
                     }
-                    return null;
-                });
-        sqlHelper.execute("SELECT type as contact_type, value as contact_value, resume_uuid FROM contact",
-                ps -> {
-                    ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        String uuid = rs.getString("resume_uuid").trim();
-                        Resume resume = map.get(uuid);
-                        if (resume != null) {
-                            addContact(rs, resume);
-                        }
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("SELECT type AS section_type, value AS section_value, resume_uuid FROM section")) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String uuid = rs.getString("resume_uuid").trim();
+                    Resume resume = resumes.get(uuid);
+                    if (resume != null) {
+                        addSection(rs, resume);
                     }
-                    return null;
-                });
-        sqlHelper.execute("SELECT type as section_type, value as section_value, resume_uuid FROM section",
-                ps -> {
-                    ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        String uuid = rs.getString("resume_uuid").trim();
-                        Resume resume = map.get(uuid);
-                        if (resume != null) {
-                            addSection(rs, resume);
-                        }
-                    }
-                    return null;
-                });
-
-        return new ArrayList<>(map.values());
+                }
+            }
+            return new ArrayList<>(resumes.values());
+        });
     }
 
     @Override
