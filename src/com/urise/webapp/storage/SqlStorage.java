@@ -32,28 +32,35 @@ public class SqlStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        return sqlHelper.execute("" +
-                        " SELECT uuid, full_name, " +
-                        " c.type as contact_type, c.value as contact_value," +
-                        " s.type as section_type, s.value as section_value" +
-                        " FROM resume r " +
-                        " LEFT JOIN contact c ON r.uuid = c.resume_uuid" +
-                        " LEFT JOIN section s ON r.uuid = s.resume_uuid" +
-                        " WHERE r.uuid =? ",
-                ps -> {
-                    ps.setString(1, uuid);
-                    ResultSet rs = ps.executeQuery();
-                    if (!rs.next()) {
-                        throw new NotExistStorageException(uuid);
-                    }
-                    Resume resume = new Resume(uuid, rs.getString("full_name"));
-                    do {
-                        addContact(rs, resume);
-                        addSection(rs, resume);
-                    } while (rs.next());
+        return sqlHelper.transactionalExecute(conn -> {
+            Resume resume;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume WHERE uuid =?")) {
+                ps.setString(1, uuid);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new NotExistStorageException(uuid);
+                }
+                resume = new Resume(uuid, rs.getString("full_name"));
+            }
 
-                    return resume;
-                });
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact WHERE resume_uuid =?")) {
+                ps.setString(1, uuid);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    addContact(rs, resume);
+                }
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM section WHERE resume_uuid =?")) {
+                ps.setString(1, uuid);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    addSection(rs, resume);
+                }
+            }
+
+            return resume;
+        });
     }
 
     @Override
@@ -121,7 +128,7 @@ public class SqlStorage implements Storage {
                     resumes.put(uuid, new Resume(uuid, rs.getString("full_name")));
                 }
             }
-            try (PreparedStatement ps = conn.prepareStatement("SELECT type AS contact_type, value AS contact_value, resume_uuid FROM contact")) {
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String uuid = rs.getString("resume_uuid").trim();
@@ -131,7 +138,7 @@ public class SqlStorage implements Storage {
                     }
                 }
             }
-            try (PreparedStatement ps = conn.prepareStatement("SELECT type AS section_type, value AS section_value, resume_uuid FROM section")) {
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM section")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String uuid = rs.getString("resume_uuid").trim();
@@ -169,9 +176,9 @@ public class SqlStorage implements Storage {
     }
 
     private void addContact(ResultSet rs, Resume resume) throws SQLException {
-        String type = rs.getString("contact_type");
+        String type = rs.getString("type");
         if (type != null) {
-            String value = rs.getString("contact_value");
+            String value = rs.getString("value");
             ContactType contactType = ContactType.valueOf(type);
             resume.addContact(contactType, value);
         }
@@ -190,9 +197,9 @@ public class SqlStorage implements Storage {
     }
 
     private void addSection(ResultSet rs, Resume resume) throws SQLException {
-        String type = rs.getString("section_type");
+        String type = rs.getString("type");
         if (type != null) {
-            String value = rs.getString("section_value");
+            String value = rs.getString("value");
             SectionType sectionType = SectionType.valueOf(type);
             resume.addSection(sectionType, JsonParser.read(value, Section.class));
         }
