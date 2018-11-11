@@ -1,10 +1,32 @@
 package com.urise.webapp.model;
 
+import java.util.List;
+
 public enum SectionType {
-    PERSONAL("Личные качества"),
-    OBJECTIVE("Позиция"),
-    ACHIEVEMENT("Достижения"),
-    QUALIFICATIONS("Квалификация"),
+    PERSONAL("Личные качества") {
+        @Override
+        protected String toHtml0(Section section) {
+            return toHtmlTextSection(section);
+        }
+    },
+    OBJECTIVE("Позиция") {
+        @Override
+        protected String toHtml0(Section value) {
+            return toHtmlTextSection(value);
+        }
+    },
+    ACHIEVEMENT("Достижения") {
+        @Override
+        protected String toHtml0(Section value) {
+            return toHtmlListSection(value);
+        }
+    },
+    QUALIFICATIONS("Квалификация") {
+        @Override
+        protected String toHtml0(Section value) {
+            return toHtmlListSection(value);
+        }
+    },
     EXPERIENCE("Опыт работы"),
     EDUCATION("Образование");
 
@@ -16,6 +38,29 @@ public enum SectionType {
 
     public String getTitle() {
         return title;
+    }
+
+    protected String toHtml0(Section value) {
+        return title + ": " + value;
+    }
+
+    public String toHtml(Section value) {
+        return (value == null) ? "" : toHtml0(value);
+    }
+
+    protected String toHtmlTextSection(Section value) {
+        return this.title + ": " + ((TextSection) value).getContent();
+    }
+
+    protected String toHtmlListSection(Section value) {
+        List<String> items = ((ListSection) value).getItems();
+        StringBuilder result = new StringBuilder();
+        for (String item : items) {
+            result.append("<LI>");
+            result.append(item);
+            result.append("</LI>");
+        }
+        return this.title + ": " + result;
     }
 }
 
