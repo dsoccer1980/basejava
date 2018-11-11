@@ -42,7 +42,7 @@ public class Resume implements Comparable<Resume>, Serializable {
     }
 
     public Map<ContactType, String> getContacts() {
-        return new HashMap<>(contacts);
+        return contacts;
     }
 
     public void setContacts(Map<ContactType, String> contacts) {
