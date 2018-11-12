@@ -1,4 +1,7 @@
 <%@ page import="com.urise.webapp.model.ContactType" %>
+<%@ page import="com.urise.webapp.model.ListSection" %>
+<%@ page import="com.urise.webapp.model.SectionType" %>
+<%@ page import="com.urise.webapp.model.TextSection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -24,10 +27,33 @@
                 <dd><input type="text" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
             </dl>
         </c:forEach>
+
+
         <h3>Секции:</h3>
-        <input type="text" name="section" size=30 value="1"><br/>
-        <input type="text" name="section" size=30 value="2"><br/>
-        <input type="text" name="section" size=30 value="3"><br/>
+        <c:forEach var="type" items="<%=SectionType.values()%>">
+            <c:set var="section" value="${resume.getSection(type)}"/>
+            <jsp:useBean id="section" class="com.urise.webapp.model.Section"/>
+            <dl>
+                <dt>${type.title}</dt>
+                <c:choose>
+                    <c:when test="${(type == 'PERSONAL') || (type == 'OBJECTIVE')}">
+                        <dd><input type="text" name="${type.name()}" size=30
+                                   value="<%=((TextSection)section).getContent()%>"></dd>
+                    </c:when>
+
+                    <c:when test="${(type == 'ACHIEVEMENT') || (type == 'QUALIFICATIONS')}">
+                        <dd>
+                            <textarea name='${type}' cols=75
+                                      rows=5><%=String.join("\n", ((ListSection) section).getItems())%></textarea>
+                        </dd>
+                    </c:when>
+
+                </c:choose>
+
+            </dl>
+        </c:forEach>
+
+
         <hr>
         <button type="submit">Сохранить</button>
         <button onclick="window.history.back()">Отменить</button>
@@ -36,3 +62,5 @@
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
+
+
