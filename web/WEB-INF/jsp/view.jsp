@@ -24,7 +24,7 @@
         <c:forEach var="sectionEntry" items="${resume.sections}">
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.Section>"/>
-    <H3><c:out value="${sectionEntry.key.title}"/></H3>
+    <H2><c:out value="${sectionEntry.key.title}"/></H2>
     <c:choose>
         <c:when test="${(sectionEntry.key.name() == 'PERSONAL') || (sectionEntry.key.name() == 'OBJECTIVE')}">
             <%=((TextSection) sectionEntry.getValue()).getContent() %><br/>
@@ -39,21 +39,35 @@
         </c:when>
 
         <c:when test="${(sectionEntry.key.name() == 'EXPERIENCE') || (sectionEntry.key.name() == 'EDUCATION')}">
+
             <c:set var="organizationSection" value="${sectionEntry.value}"/>
             <jsp:useBean id="organizationSection" type="com.urise.webapp.model.OrganizationSection"/>
             <c:forEach var="organization" items="${organizationSection.section}">
-                <a href="${organization.homePage.url}">${organization.homePage.name}</a>
 
-                <c:forEach var="position" items="${organization.positions}">
-                    <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Position"/>
-                    <BR>
-                    <%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %> -
-                    <%= position.getDateEnd().equals(NOW) ? "Сейчас" : position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%>
-                    <c:out value="${position.title}"/><BR>
-                    <c:out value="${position.text}"/><BR>
-                </c:forEach>
-                <BR>
+                <a href="${organization.homePage.url}"><H3>${organization.homePage.name}</H3></a>
+
+                <TABLE cellspacing="10">
+                    <c:forEach var="position" items="${organization.positions}">
+                        <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Position"/>
+                        <TR>
+                            <TD ROWSPAN="2" valign="top">
+                                <%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %> -
+                                <%= position.getDateEnd().equals(NOW) ? "Сейчас" : position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%>
+                            </TD>
+                            <TD>
+                                <B><c:out value="${position.title}"/></B>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD>
+                                <c:out value="${position.text}"/>
+                            </TD>
+                        </TR>
+                    </c:forEach>
+                </TABLE>
+
             </c:forEach>
+
         </c:when>
 
     </c:choose>

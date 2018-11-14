@@ -44,54 +44,54 @@ public abstract class AbstractStorageTest {
 
         storage.clear();
         Map<ContactType, String> contacts = new HashMap<>();
-        contacts.put(ContactType.TELEFON, "+7(921) 855-0482");
-        contacts.put(ContactType.SKYPE, "grigory.kislin");
-        contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
+        contacts.put(ContactType.TELEFON, "+7(981) 916-2219");
+        contacts.put(ContactType.SKYPE, "dsoccer1980");
+        contacts.put(ContactType.EMAIL, "dsoccer1980@gmail.com");
         resume1.setContacts(contacts);
         Map<SectionType, Section> sections = new HashMap<>();
-        sections.put(SectionType.OBJECTIVE, new TextSection("objective content"));
-        sections.put(SectionType.PERSONAL, new TextSection("personal content"));
+        sections.put(SectionType.OBJECTIVE, new TextSection("Java Developer"));
+        sections.put(SectionType.PERSONAL, new TextSection("Трудолюбивый, целеустремленный"));
         sections.put(SectionType.ACHIEVEMENT,
-                new ListSection(Arrays.asList("achievement1", "achievement2")));
+                new ListSection(Arrays.asList("Разработка Spring/JPA Enterprise application", "Разработка basejava application")));
         sections.put(SectionType.QUALIFICATIONS,
-                new ListSection(Arrays.asList("qualification1", "qualification2")));
+                new ListSection(Arrays.asList("Java Core", "PostgreSQL")));
 
         Organization.Position organizationPosition1 = new Organization.Position(
-                "organizationPosition1 title",
-                LocalDate.of(2013, 10, 1),
-                NOW, "position1 text");
+                "Системный администратор",
+                LocalDate.of(2002, 11, 1),
+                NOW, "Администрирование сети, поддержка пользователей");
 
 
-        Organization workOrganization1 = new Organization("workOrganization1 name", "http://javaops.ru/", organizationPosition1);
+        Organization workOrganization1 = new Organization("Orica Eesti", "http://www.orica.com", organizationPosition1);
 
         Organization.Position organizationPosition2 = new Organization.Position(
-                "organizationPosition2 title",
-                LocalDate.of(2012, 4, 1),
-                LocalDate.of(2014, 10, 1), "organizationPosition2 text");
-        Organization workOrganization2 = new Organization("workOrganization2 name", null, organizationPosition2);
+                "Стажер",
+                LocalDate.of(2018, 6, 1),
+                LocalDate.of(2018, 12, 1), "Стажировка на курсе BaseJava ");
+        Organization workOrganization2 = new Organization("JawaWebinar", null, organizationPosition2);
 
         OrganizationSection experience = new OrganizationSection(workOrganization1, workOrganization2);
         sections.put(SectionType.EXPERIENCE, experience);
 
         Organization.Position organizationPosition3 = new Organization.Position(
-                "education position1 title",
-                LocalDate.of(2013, 3, 1),
-                LocalDate.of(2013, 5, 1),
+                "Ученик",
+                LocalDate.of(2018, 6, 1),
+                LocalDate.of(2018, 12, 1),
                 "");
 
-        Organization educationOrganization1 = new Organization("educationOrganization1 name", "https://www.coursera.org/course/progfun", organizationPosition3);
+        Organization educationOrganization1 = new Organization("Java Online Projects", "http://javaops.ru/", organizationPosition3);
 
         Organization.Position organizationPosition4 = new Organization.Position(
-                "education position2 title",
-                LocalDate.of(1993, 9, 1),
-                LocalDate.of(1996, 7, 1),
+                "Software and database management",
+                LocalDate.of(2011, 9, 1),
+                LocalDate.of(2013, 6, 1),
                 "");
         Organization.Position organizationPosition5 = new Organization.Position(
-                "education position3 title",
-                LocalDate.of(1987, 9, 1),
-                LocalDate.of(1993, 7, 1),
+                "Bachelor Degree in Informatics",
+                LocalDate.of(1998, 9, 1),
+                LocalDate.of(2002, 7, 1),
                 "");
-        Organization educationOrganization2 = new Organization("educationOrganization2 name", "http://www.ifmo.ru/", organizationPosition4, organizationPosition5);
+        Organization educationOrganization2 = new Organization("Tartu University", "https://www.ut.ee/ru", organizationPosition4, organizationPosition5);
 
 
         OrganizationSection education = new OrganizationSection(educationOrganization1, educationOrganization2);
