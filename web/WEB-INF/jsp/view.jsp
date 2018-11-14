@@ -1,3 +1,6 @@
+<%@ page import="com.urise.webapp.model.TextSection" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="static com.urise.webapp.util.DateUtil.NOW" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -21,8 +24,40 @@
         <c:forEach var="sectionEntry" items="${resume.sections}">
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.Section>"/>
-                <%=sectionEntry.getKey().toHtml(sectionEntry.getValue())%><br/>
-        </c:forEach>
+    <H3><c:out value="${sectionEntry.key.title}"/></H3>
+    <c:choose>
+        <c:when test="${(sectionEntry.key.name() == 'PERSONAL') || (sectionEntry.key.name() == 'OBJECTIVE')}">
+            <%=((TextSection) sectionEntry.getValue()).getContent() %><br/>
+        </c:when>
+
+        <c:when test="${(sectionEntry.key.name() == 'ACHIEVEMENT') || (sectionEntry.key.name() == 'QUALIFICATIONS')}">
+            <c:set var="listSection" value="${sectionEntry.value}"/>
+            <jsp:useBean id="listSection" type="com.urise.webapp.model.ListSection"/>
+            <c:forEach var="item" items="${listSection.items}">
+                <LI><c:out value="${item}"/></LI>
+            </c:forEach>
+        </c:when>
+
+        <c:when test="${(sectionEntry.key.name() == 'EXPERIENCE') || (sectionEntry.key.name() == 'EDUCATION')}">
+            <c:set var="organizationSection" value="${sectionEntry.value}"/>
+            <jsp:useBean id="organizationSection" type="com.urise.webapp.model.OrganizationSection"/>
+            <c:forEach var="organization" items="${organizationSection.section}">
+                <a href="${organization.homePage.url}">${organization.homePage.name}</a>
+
+                <c:forEach var="position" items="${organization.positions}">
+                    <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Position"/>
+                    <BR>
+                    <%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %> -
+                    <%= position.getDateEnd().equals(NOW) ? "Сейчас" : position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%>
+                    <c:out value="${position.title}"/><BR>
+                    <c:out value="${position.text}"/><BR>
+                </c:forEach>
+                <BR>
+            </c:forEach>
+        </c:when>
+
+    </c:choose>
+    </c:forEach>
     <p>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
