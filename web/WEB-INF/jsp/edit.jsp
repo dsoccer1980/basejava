@@ -2,6 +2,8 @@
 <%@ page import="com.urise.webapp.model.ListSection" %>
 <%@ page import="com.urise.webapp.model.SectionType" %>
 <%@ page import="com.urise.webapp.model.TextSection" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="static com.urise.webapp.util.DateUtil.NOW" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -45,6 +47,25 @@
                         <dd>
                             <textarea name='${type}' cols=75
                                       rows=5><%=String.join("\n", ((ListSection) section).getItems())%></textarea>
+                        </dd>
+                    </c:when>
+
+                    <c:when test="${(type == 'EXPERIENCE') || (type == 'EDUCATION')}">
+                        <dd>
+                            <c:set var="organizationSection" value="${section}"/>
+                            <jsp:useBean id="organizationSection" type="com.urise.webapp.model.OrganizationSection"/>
+                            <c:forEach var="organization" items="${organizationSection.section}" varStatus="counter">
+                                Название учреждения:<input type="text" name="${type}" value="${organization.homePage.name}">
+                                Сайт учреждения:<input type="text" name="${type}url" value="${organization.homePage.url}">
+                                <BR>
+                                <c:forEach var="position" items="${organization.positions}">
+                                    <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Position"/>
+                                    Начальная дата:<input type="text" name="${type}${counter.index}startDate" value="<%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %> "><BR>
+                                    Конечная дата:<input type="text" name="${type}${counter.index}endDate" value="<%= position.getDateEnd().equals(NOW) ? "Сейчас" : position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%> "><BR>
+                                    Должность:<input type="text" name="${type}${counter.index}title" value="${position.title}"/><BR>
+                                    Описание:<textarea name="${type}${counter.index}description" cols=75 rows=5>${position.text}</textarea><BR>
+                                </c:forEach>
+                            </c:forEach>
                         </dd>
                     </c:when>
 

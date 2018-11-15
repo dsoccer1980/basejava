@@ -4,12 +4,14 @@ import com.urise.webapp.Config;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.SqlStorage;
 import com.urise.webapp.storage.Storage;
+import com.urise.webapp.util.DateUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class ResumeServlet extends HttpServlet {
     private final Config config = Config.get();
@@ -54,6 +56,17 @@ public class ResumeServlet extends HttpServlet {
                     case "ACHIEVEMENT":
                     case "QUALIFICATIONS":
                         r.addSection(type, new ListSection(value.split("\n")));
+                        break;
+                    case "EXPERIENCE":
+                    case "EDUCATION":
+                        String url = request.getParameter(type.name() + "url");
+                        LocalDate startDate = DateUtil.parse(request.getParameter(type.name() + "0startDate").trim());
+                        LocalDate endDate = DateUtil.parse(request.getParameter(type.name() + "0endDate").trim());
+                        String title = request.getParameter(type.name() + "0title");
+                        String description = request.getParameter(type.name() + "0description");
+                        Organization.Position position = new Organization.Position(title, startDate, endDate, description);
+                        Organization organization = new Organization(value, url, position);
+                        r.addSection(type, new OrganizationSection(organization));
                 }
             }
         }
