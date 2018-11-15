@@ -60,8 +60,13 @@
                                 <BR>
                                 <c:forEach var="position" items="${organization.positions}">
                                     <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Position"/>
-                                    Начальная дата:<input type="text" name="${type}${counter.index}startDate" value="<%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %> "><BR>
-                                    Конечная дата:<input type="text" name="${type}${counter.index}endDate" value="<%= position.getDateEnd().equals(NOW) ? "Сейчас" : position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%> "><BR>
+                                    Начальная дата:<input type="text" name="${type}${counter.index}startDate"
+                                    value="<%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %>"
+                                    placeholder="MM/yyyy"><BR>
+                                    Конечная дата:<input type="text" name="${type}${counter.index}endDate"
+                                    value="<%= position.getDateEnd().equals(NOW) ? "Сейчас" :
+                                        position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%>"
+                                    placeholder="MM/yyyy"><BR>
                                     Должность:<input type="text" name="${type}${counter.index}title" value="${position.title}"/><BR>
                                     Описание:<textarea name="${type}${counter.index}description" cols=75 rows=5>${position.text}</textarea><BR>
                                 </c:forEach>

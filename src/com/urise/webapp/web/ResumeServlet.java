@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private final Config config = Config.get();
@@ -28,20 +30,20 @@ public class ResumeServlet extends HttpServlet {
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
 
-        Resume r;
+        Resume resume;
         if (uuid != null) {
-            r = storage.get(uuid);
-            r.setFullName(fullName);
+            resume = storage.get(uuid);
+            resume.setFullName(fullName);
         } else {
-            r = new Resume(fullName);
+            resume = new Resume(fullName);
         }
 
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
-                r.addContact(type, value);
+                resume.addContact(type, value);
             } else {
-                r.getContacts().remove(type);
+                resume.getContacts().remove(type);
             }
         }
 
@@ -51,30 +53,34 @@ public class ResumeServlet extends HttpServlet {
                 switch (type.name()) {
                     case "PERSONAL":
                     case "OBJECTIVE":
-                        r.addSection(type, new TextSection(value));
+                        resume.addSection(type, new TextSection(value));
                         break;
                     case "ACHIEVEMENT":
                     case "QUALIFICATIONS":
-                        r.addSection(type, new ListSection(value.split("\n")));
+                        resume.addSection(type, new ListSection(value.split("\n")));
                         break;
                     case "EXPERIENCE":
                     case "EDUCATION":
-                        String url = request.getParameter(type.name() + "url");
-                        LocalDate startDate = DateUtil.parse(request.getParameter(type.name() + "0startDate").trim());
-                        LocalDate endDate = DateUtil.parse(request.getParameter(type.name() + "0endDate").trim());
-                        String title = request.getParameter(type.name() + "0title");
-                        String description = request.getParameter(type.name() + "0description");
-                        Organization.Position position = new Organization.Position(title, startDate, endDate, description);
-                        Organization organization = new Organization(value, url, position);
-                        r.addSection(type, new OrganizationSection(organization));
+                        int amount = request.getParameterValues(type.name()).length;
+                        List<Organization> organizations = new ArrayList<>();
+                        for (int index = 0; index < amount; index++) {
+                            String url = request.getParameter(type.name() + "url");
+                            LocalDate startDate = DateUtil.parse(request.getParameter(type.name() + index + "startDate").trim());
+                            LocalDate endDate = DateUtil.parse(request.getParameter(type.name() + index + "endDate").trim());
+                            String title = request.getParameter(type.name() + index + "title");
+                            String description = request.getParameter(type.name() + index + "description");
+                            Organization.Position position = new Organization.Position(title, startDate, endDate, description);
+                            organizations.add(new Organization(value, url, position));
+                        }
+                        resume.addSection(type, new OrganizationSection(organizations));
                 }
             }
         }
 
         if (uuid == null) {
-            storage.save(r);
+            storage.save(resume);
         } else {
-            storage.update(r);
+            storage.update(resume);
         }
         response.sendRedirect("resume");
     }
