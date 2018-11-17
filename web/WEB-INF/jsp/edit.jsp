@@ -81,7 +81,7 @@
                                             position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%>"
                                         placeholder="MM/yyyy"><BR>
                                         Должность:<input type="text" name="${type}${counter.index}title" value="${position.title}"/><BR>
-                                        Описание:<textarea name="${type}${counter.index}description" cols=75 rows=5>${position.text}</textarea><BR>
+                                        Описание:<BR><textarea name="${type}${counter.index}description" cols=75 rows=5>${position.text}</textarea><BR>
                                     </c:forEach>
                                 </c:forEach>
                             </c:if>

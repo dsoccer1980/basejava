@@ -31,11 +31,11 @@ public class ResumeServlet extends HttpServlet {
         String fullName = request.getParameter("fullName");
 
         Resume resume;
-        if (uuid != null) {
+        if (isUuidExists(uuid)) {
+            resume = new Resume(fullName);
+        } else {
             resume = storage.get(uuid);
             resume.setFullName(fullName);
-        } else {
-            resume = new Resume(fullName);
         }
 
         for (ContactType type : ContactType.values()) {
@@ -78,7 +78,7 @@ public class ResumeServlet extends HttpServlet {
             }
         }
 
-        if (uuid == null) {
+        if (isUuidExists(uuid)) {
             storage.save(resume);
         } else {
             storage.update(resume);
@@ -105,8 +105,8 @@ public class ResumeServlet extends HttpServlet {
                 resume = storage.get(uuid);
                 break;
             case "add":
-                request.getRequestDispatcher(("/WEB-INF/jsp/add.jsp")
-                ).forward(request, response);
+                resume = new Resume();
+                break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
@@ -114,6 +114,10 @@ public class ResumeServlet extends HttpServlet {
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
+    }
+
+    private boolean isUuidExists(String uuid) {
+        return uuid == null || uuid.equals("");
     }
 
 }
