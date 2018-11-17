@@ -39,38 +39,61 @@
                 <dt>${type.title}</dt>
                 <c:choose>
                     <c:when test="${(type == 'PERSONAL') || (type == 'OBJECTIVE')}">
-                        <dd><input type="text" name="${type.name()}" size=30
-                                   value="<%=((TextSection)section).getContent()%>"></dd>
+                        <dd>
+
+                            <input type="text" name="${type.name()}" size=30
+                            <c:if test="${resume.getSection(type) != null}">
+                                   value="<%=((TextSection)section).getContent()%>"
+                            </c:if>>
+                        </dd>
                     </c:when>
 
                     <c:when test="${(type == 'ACHIEVEMENT') || (type == 'QUALIFICATIONS')}">
                         <dd>
-                            <textarea name='${type}' cols=75
-                                      rows=5><%=String.join("\n", ((ListSection) section).getItems())%></textarea>
+                            <c:if test="${resume.getSection(type) != null}">
+                                <textarea name='${type}' cols=75
+                                          rows=5><%=String.join("\n", ((ListSection) section).getItems())%></textarea>
+                            </c:if>
+                            <c:if test="${resume.getSection(type) == null}">
+                                <textarea name='${type}' cols=75 rows=5></textarea>
+                            </c:if>
                         </dd>
                     </c:when>
 
                     <c:when test="${(type == 'EXPERIENCE') || (type == 'EDUCATION')}">
                         <dd>
-                            <c:set var="organizationSection" value="${section}"/>
-                            <jsp:useBean id="organizationSection" type="com.urise.webapp.model.OrganizationSection"/>
-                            <c:forEach var="organization" items="${organizationSection.section}" varStatus="counter">
-                                Название учреждения:<input type="text" name="${type}" value="${organization.homePage.name}">
-                                Сайт учреждения:<input type="text" name="${type}url" value="${organization.homePage.url}">
-                                <BR>
-                                <c:forEach var="position" items="${organization.positions}">
-                                    <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Position"/>
-                                    Начальная дата:<input type="text" name="${type}${counter.index}startDate"
-                                    value="<%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %>"
-                                    placeholder="MM/yyyy"><BR>
-                                    Конечная дата:<input type="text" name="${type}${counter.index}endDate"
-                                    value="<%= position.getDateEnd().equals(NOW) ? "Сейчас" :
-                                        position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%>"
-                                    placeholder="MM/yyyy"><BR>
-                                    Должность:<input type="text" name="${type}${counter.index}title" value="${position.title}"/><BR>
-                                    Описание:<textarea name="${type}${counter.index}description" cols=75 rows=5>${position.text}</textarea><BR>
+                            <c:if test="${resume.getSection(type) != null}">
+                                <c:set var="organizationSection" value="${section}"/>
+                                <jsp:useBean id="organizationSection"
+                                             type="com.urise.webapp.model.OrganizationSection"/>
+                                <c:forEach var="organization" items="${organizationSection.section}"
+                                           varStatus="counter">
+                                    Название учреждения:<input type="text" name="${type}" value="${organization.homePage.name}">
+                                    Сайт учреждения:<input type="text" name="${type}url" value="${organization.homePage.url}">
+                                    <BR>
+                                    <c:forEach var="position" items="${organization.positions}">
+                                        <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Position"/>
+                                        Начальная дата:<input type="text" name="${type}${counter.index}startDate"
+                                        value="<%= position.getDateBegin().format(DateTimeFormatter.ofPattern("MM/yyyy")) %>"
+                                        placeholder="MM/yyyy"><BR>
+                                        Конечная дата:<input type="text" name="${type}${counter.index}endDate"
+                                        value="<%= position.getDateEnd().equals(NOW) ? "Сейчас" :
+                                            position.getDateEnd().format(DateTimeFormatter.ofPattern("MM/yyyy"))%>"
+                                        placeholder="MM/yyyy"><BR>
+                                        Должность:<input type="text" name="${type}${counter.index}title" value="${position.title}"/><BR>
+                                        Описание:<textarea name="${type}${counter.index}description" cols=75 rows=5>${position.text}</textarea><BR>
+                                    </c:forEach>
                                 </c:forEach>
-                            </c:forEach>
+                            </c:if>
+                            <c:if test="${resume.getSection(type) == null}">
+                                Название учреждения:<input type="text" name="${type}">
+                                Сайт учреждения:<input type="text" name="${type}url">
+                                <BR>
+                                Начальная дата:<input type="text" name="${type}0startDate" placeholder="MM/yyyy"><BR>
+                                Конечная дата:<input type="text" name="${type}0endDate" placeholder="MM/yyyy"><BR>
+                                Должность:<input type="text" name="${type}0title"/><BR>
+                                Описание:<textarea name="${type}0description" cols=75 rows=5></textarea><BR
+                            </c:if>
                         </dd>
                     </c:when>
 
