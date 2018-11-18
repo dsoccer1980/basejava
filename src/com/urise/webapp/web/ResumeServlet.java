@@ -32,10 +32,10 @@ public class ResumeServlet extends HttpServlet {
 
         Resume resume;
         if (isUuidExists(uuid)) {
-            resume = new Resume(fullName);
-        } else {
             resume = storage.get(uuid);
             resume.setFullName(fullName);
+        } else {
+            resume = new Resume(fullName);
         }
 
         for (ContactType type : ContactType.values()) {
@@ -65,23 +65,27 @@ public class ResumeServlet extends HttpServlet {
                         List<Organization> organizations = new ArrayList<>();
                         for (int index = 0; index < amount; index++) {
                             String name = request.getParameterValues(type.name())[index];
-                            String url = request.getParameter(type.name() + "url");
-                            LocalDate startDate = DateUtil.parse(request.getParameter(type.name() + index + "startDate").trim());
-                            LocalDate endDate = DateUtil.parse(request.getParameter(type.name() + index + "endDate").trim());
-                            String title = request.getParameter(type.name() + index + "title");
-                            String description = request.getParameter(type.name() + index + "description");
-                            Organization.Position position = new Organization.Position(title, startDate, endDate, description);
-                            organizations.add(new Organization(name, url, position));
+                            if (!name.trim().equals("")) {
+                                String url = request.getParameter(type.name() + "url");
+                                LocalDate startDate = DateUtil.parse(request.getParameter(type.name() + index + "startDate").trim());
+                                LocalDate endDate = DateUtil.parse(request.getParameter(type.name() + index + "endDate").trim());
+                                String title = request.getParameter(type.name() + index + "title");
+                                String description = request.getParameter(type.name() + index + "description");
+                                Organization.Position position = new Organization.Position(title, startDate, endDate, description);
+                                organizations.add(new Organization(name, url, position));
+                            }
                         }
                         resume.addSection(type, new OrganizationSection(organizations));
                 }
+            } else {
+                resume.removeSection(type);
             }
         }
 
         if (isUuidExists(uuid)) {
-            storage.save(resume);
-        } else {
             storage.update(resume);
+        } else {
+            storage.save(resume);
         }
         response.sendRedirect("resume");
     }
@@ -117,7 +121,7 @@ public class ResumeServlet extends HttpServlet {
     }
 
     private boolean isUuidExists(String uuid) {
-        return uuid == null || uuid.equals("");
+        return uuid != null && !uuid.equals("");
     }
 
 }

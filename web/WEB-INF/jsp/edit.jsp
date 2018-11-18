@@ -83,17 +83,28 @@
                                         Должность:<input type="text" name="${type}${counter.index}title" value="${position.title}"/><BR>
                                         Описание:<BR><textarea name="${type}${counter.index}description" cols=75 rows=5>${position.text}</textarea><BR>
                                     </c:forEach>
+                                    <HR>
+                                    <BR>
                                 </c:forEach>
+                                <c:set var="begin" value="${organizationSection.section.size()}"/>
+                                <c:set var="end" value="${organizationSection.section.size()}"/>
                             </c:if>
                             <c:if test="${resume.getSection(type) == null}">
+                                <c:set var="begin" value="0"/>
+                                <c:set var="end" value="1"/>
+                            </c:if>
+                            <c:forEach begin="${begin}" end="${end}" varStatus="counter">
                                 Название учреждения:<input type="text" name="${type}">
                                 Сайт учреждения:<input type="text" name="${type}url">
                                 <BR>
-                                Начальная дата:<input type="text" name="${type}0startDate" placeholder="MM/yyyy"><BR>
-                                Конечная дата:<input type="text" name="${type}0endDate" placeholder="MM/yyyy"><BR>
-                                Должность:<input type="text" name="${type}0title"/><BR>
-                                Описание:<textarea name="${type}0description" cols=75 rows=5></textarea><BR
-                            </c:if>
+                                Начальная дата:<input type="text" name="${type}${counter.index}startDate" placeholder="MM/yyyy"><BR>
+                                Конечная дата:<input type="text" name="${type}${counter.index}endDate" placeholder="MM/yyyy"><BR>
+                                Должность:<input type="text" name="${type}${counter.index}title"/><BR>
+                                Описание:<BR><textarea name="${type}${counter.index}description" cols=75 rows=5></textarea><BR>
+                                <HR>
+                                <BR>
+                            </c:forEach>
+
                         </dd>
                     </c:when>
 
@@ -105,7 +116,7 @@
 
         <hr>
         <button type="submit">Сохранить</button>
-        <button onclick="window.history.back()">Отменить</button>
+        <button type="reset" onclick="window.history.back()">Отменить</button>
     </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>

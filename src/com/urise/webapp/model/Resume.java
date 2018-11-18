@@ -76,6 +76,10 @@ public class Resume implements Comparable<Resume>, Serializable {
         return sections.get(type);
     }
 
+    public void removeSection(SectionType type) {
+        sections.remove(type);
+    }
+
     @Override
     public String toString() {
         return "Resume{" +
